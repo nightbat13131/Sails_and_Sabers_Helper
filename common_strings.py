@@ -1,5 +1,7 @@
 WELCOME_STRING = "Bloodline: Heros of Lisths - Sails and Sabers helper"
 
+## -- Generic Strings -- ##
+
 BLANK = ""
 CENTER = 'center'
 CLEAR = 'Clear'
@@ -15,6 +17,8 @@ SHIP = 'Ship'
 TRAVEL = 'Travel'
 UPDATE = "Update"
 YES = "Yes"
+
+## -- Item Menus -- ##
 
 HEADER_TEXT = '-HEADER_TEXT-'
 HEADER_TEXT_DEFAULT = WELCOME_STRING.center(75, "~")
@@ -53,6 +57,8 @@ AUTO_POPULATE_SELL_KEY = '-AUTO_POPULATE_SELL_KEY-'
 UPDATE_BAG_BUTTON_KEY = '-Update_bags_button_key-'
 REMOVE_ITEM_BUTTON_KEY = "-Remove Item Button key-"
 
+## -- Maps and Maps' Tables -- ##
+
 TAB_1_TITLE = "Each Island's Best Outgoing Trade"
 BEST_1_OUT_GRAPH_KEY = f"-{TAB_1_TITLE} Graph Key-"
 BEST_1_OUT_TABLE_KEY = f"-{TAB_1_TITLE} Table Key-"
@@ -68,6 +74,16 @@ sure your Ship location is correct as that's the island the path
 starts from. This calculation does take skipping islands into account. 
 Press the "{BEST_LONG_PATH_BUTTON_TEXT}" button when you are ready."""
 BEST_LONG_PATH_BUTTON_KEY = f"-{TAB_2_TITLE} {BEST_LONG_PATH_BUTTON_TEXT} Key -"
+
+#### ---- Map Colors ---- ####
+
+WATER = "deep sky blue" # 'light sea green'
+WATER_HIGHLIGHT = 'pale turquoise'
+ISLAND_BODY_0 = 'saddle brown'
+ISLAND_BODY_1 = 'brown'
+ISLAND_NAME_TEXT_COLOR = 'black'
+
+## -- Ship and Ship's Table -- ##
 
 TRAVEL_ISLAND_NAME_PRMOPT = 'Select an Island to Travel to'
 TRAVEL_ISLAND_NAME_KEY = '-holder for current location island'
@@ -92,15 +108,9 @@ MODE_HEADER = "Select focus value for calculations: "
 WORLD_MODE = "world_mode"
 WORLD_MODE_KEY = "-World mode key:-"
 
+## -- Footer -- ##
 
 FOOTER_TEXT = '-Footer_text-'
 FOOTER_TEXT_PREFIX = 'Last command: '
 TRAVEL_TO_PREFIX = '-Travel_to_'
 
-#### ---  Map   --- ####
-
-WATER = "deep sky blue" # 'light sea green'
-WATER_HIGHLIGHT = 'pale turquoise'
-ISLAND_BODY_0 = 'saddle brown'
-ISLAND_BODY_1 = 'brown'
-ISLAND_NAME_TEXT_COLOR = 'black'
