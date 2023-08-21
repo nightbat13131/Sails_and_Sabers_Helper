@@ -1,0 +1,395 @@
+{
+  "ship": {
+    "current_location": "Samalkan",
+    "capacity": 90,
+    "bargaining_power": 0,
+    "travel points": 10, 
+    "ship_sail" : [[-1, 6],
+    [0, 6],
+    [-3, 1],
+    [3, 1]
+    ],
+    "ship_hull" : [[-3, 1],
+    [-2, -1],
+    [2, -1],
+    [3, 1],
+    [0, 1],
+    [0, 6], 
+    [-1, 6],
+    [-1, 1]
+    ]
+  },
+  "items": [
+    {
+      "name": "Darkhide",
+      "base_value": 70,
+      "weight": 3
+    },
+    {
+      "name": "Dragonglass",
+      "base_value": 30,
+      "weight": 2
+    },
+    {
+      "name": "Fresh Fruit",
+      "base_value": 70,
+      "weight": 3
+    },
+    {
+      "name": "Gold",
+      "base_value": 500,
+      "weight": 10
+    },
+    {
+      "name": "Gunpowder",
+      "base_value": 150,
+      "weight": 5
+    },
+    {
+      "name": "Lodestone",
+      "base_value": 150,
+      "weight": 5
+    },
+    {
+      "name": "Silver",
+      "base_value": 150,
+      "weight": 5
+    },
+    {
+      "name": "Spices",
+      "base_value": 150,
+      "weight": 5
+    },
+    {
+      "name": "Spidersilk",
+      "base_value": 70,
+      "weight": 3
+    },
+    {
+      "name": "Tea Leaf",
+      "base_value": 30,
+      "weight": 2
+    },
+    {
+      "name": "Titanbone",
+      "base_value": 500,
+      "weight": 10
+    },
+    {
+      "name": "Witchsteel",
+      "base_value": 70,
+      "weight": 3
+    }
+  ],
+  "nodes": {
+    "Abidos": {
+      "selling": {
+        
+      },
+      "buying": {
+        
+      },
+      "loc_x_y": [
+        -75,
+        10
+      ],
+      "dock_x_y" : [-2,-3],
+      "shape": [
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          -5
+        ],
+        [
+          -5,
+          -5
+        ],
+        [
+          -5,
+          5
+        ]
+      ]
+    },
+    "Coranzon": {
+      "selling": {
+        
+      },
+      "buying": {
+        
+      },
+      "loc_x_y": [
+        -25,
+        75
+      ],
+      "dock_x_y" : [-2,-3],
+      "shape": [
+        [
+          5,
+          0
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          -5,
+          0
+        ],
+        [
+          0,
+          -5
+        ]
+      ]
+    },
+    "Hagenport": {
+      "selling": {
+        
+      },
+      "buying": {
+        
+      },
+      "loc_x_y": [
+        75,
+        75
+      ],
+      "dock_x_y" : [-2,-3],
+      "shape": [
+        [
+          0,
+          -1
+        ],
+        [
+          -5,
+          -1
+        ],
+        [
+          -4,
+          1
+        ],
+        [
+          -2,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          5,
+          -1
+        ],
+        [
+          4,
+          -3
+        ],
+        [
+          3,
+          -4
+        ],
+        [
+          2,
+          -2
+        ]
+      ]
+    },
+    "Dredgewater": {
+      "selling": {
+        
+      },
+      "buying": {
+        
+      },
+      "loc_x_y": [
+        75,
+        -70
+      ],
+      "dock_x_y" : [-2,-3],
+      "shape":  [[6, -6],
+      [12, 18],
+      [6, 24],
+      [6, 30],
+      [0, 24],
+      [-6, 24],
+      [6, 18],
+      [0, 12],
+      [-6, 12],
+      [-12, 18],
+      [-18, 6],
+      [-30, 6],
+      [-24, 0],
+      [-30, -6],
+      [-18, -12],
+      [-12, -6]    
+      ]
+    },
+    "New Morrag": {
+      "selling": {
+        
+      },
+      "buying": {
+        
+      },
+      "loc_x_y": [
+        -25,
+        -80
+      ],
+      "dock_x_y" : [-2,-3],
+      "shape": null
+    },
+    "Samalkan": {
+      "selling": {
+        
+      },
+      "buying": {
+        
+      },
+      "loc_x_y": [
+        20,
+        0
+      ],
+      "dock_x_y" : [-2,-3],
+      "shape": [[-1, -9],
+      [-6, -14],
+      [-16, -9],
+      [-11, -4],
+      [-16, 6],
+      [-11, 16],
+      [-6, 26],
+      [14, 16],
+      [24, 21],
+      [24, 11],
+      [19, 16],
+      [9, 6],
+      [9, -4]        
+    
+      ]
+    }
+  },
+  "edges": {
+    "undirected edges": [
+      {
+        "nodes": [
+          "Abidos",
+          "Coranzon"
+        ],
+        "weight": 1
+      },
+      {
+        "nodes": [
+          "Abidos",
+          "Hagenport"
+        ],
+        "weight": 2
+      },
+      {
+        "nodes": [
+          "Abidos",
+          "Dredgewater"
+        ],
+        "weight": 2
+      },
+      {
+        "nodes": [
+          "Abidos",
+          "New Morrag"
+        ],
+        "weight": 1
+      },
+      {
+        "nodes": [
+          "Abidos",
+          "Samalkan"
+        ],
+        "weight": 1
+      },
+      {
+        "nodes": [
+          "Coranzon",
+          "Hagenport"
+        ],
+        "weight": 1
+      },
+      {
+        "nodes": [
+          "Coranzon",
+          "Dredgewater"
+        ],
+        "weight": 2
+      },
+      {
+        "nodes": [
+          "Coranzon",
+          "New Morrag"
+        ],
+        "weight": 2
+      },
+      {
+        "nodes": [
+          "Coranzon",
+          "Samalkan"
+        ],
+        "weight": 1
+      },
+      {
+        "nodes": [
+          "Hagenport",
+          "Dredgewater"
+        ],
+        "weight": 1
+      },
+      {
+        "nodes": [
+          "Hagenport",
+          "New Morrag"
+        ],
+        "weight": 2
+      },
+      {
+        "nodes": [
+          "Hagenport",
+          "Samalkan"
+        ],
+        "weight": 1
+      },
+      {
+        "nodes": [
+          "Dredgewater",
+          "New Morrag"
+        ],
+        "weight": 1
+      },
+      {
+        "nodes": [
+          "Dredgewater",
+          "Samalkan"
+        ],
+        "weight": 1
+      },
+      {
+        "nodes": [
+          "New Morrag",
+          "Samalkan"
+        ],
+        "weight": 1
+      }
+    ],
+    "directed edges": [
+      {
+        "from": null,
+        "to": null,
+        "weight": null
+      }
+    ]
+  }
+}
