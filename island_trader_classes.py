@@ -127,9 +127,11 @@ class Item_Bag(dict):
 
     def __add_item_from_json(self, item_name, mod) -> None:
         py_item = self.world.item_holder[item_name]
-        self.update({py_item: mod})
+        self.add_item(py_item, mod)
 
     def add_item(self, py_item, mod) -> None:
+        if len(self) >= 6:  # block more than 6 items being in the bag.
+            return
         self.update({py_item: mod})
 
     def item_modded_value(self, py_item):
@@ -146,7 +148,6 @@ class Item_Bag(dict):
 
     def __repr__(self):
         return f"Item_Bag: {self.mode} {[each for each in self.items()]}"
-
 
 class Island():
     PRIMARY_KEY = "nodes"
