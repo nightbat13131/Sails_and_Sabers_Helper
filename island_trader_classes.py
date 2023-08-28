@@ -149,6 +149,7 @@ class Item_Bag(dict):
     def __repr__(self):
         return f"Item_Bag: {self.mode} {[each for each in self.items()]}"
 
+
 class Island():
     PRIMARY_KEY = "nodes"
     SELLING_KEY = Item_Bag.SELLING_KEY
@@ -164,7 +165,7 @@ class Island():
         self.sell = Item_Bag(type_key = self.SELLING_KEY, dict_objs = dict_obj[self.SELLING_KEY], world = world)
         self.buy = Item_Bag(type_key = self.BUYING_KEY, dict_objs = dict_obj[self.BUYING_KEY], world = world)
         self.loc_x_y = tuple(dict_obj[self.LOCATION_KEY])
-        self.shape = self.shifted_shape(dict_obj[self.SHAPE_KEY])
+        self.shapes = self.shifted_shape(dict_obj[self.SHAPE_KEY])
         self.dock = self.__x_y_shift(dict_obj[self.DOCK_KEY])
         
     @property
@@ -183,12 +184,14 @@ class Island():
     def __x_y_shift(self, point: list or tuple) -> tuple:
         return (point[0]+self.x, point[1]+self.y)
 
-    def shifted_shape(self, shape_array) -> list:
-        if shape_array == None:
+    def shifted_shape(self, shapes_array) -> list:
+        if debug: print("shifted_shape", self.name, shapes_array )
+        if shapes_array == None:
             return None
-        for index, each_pair in enumerate(shape_array):
-            shape_array[index] = self.__x_y_shift(each_pair)
-        return shape_array
+        for index_0, each_shape in enumerate(shapes_array):
+            for index_1, each_pair in enumerate(each_shape):
+                shapes_array[index_0][index_1] = self.__x_y_shift(each_pair)
+        return shapes_array
 
     def reset_bags(self):
         if debug: print(f"reset_bags {self.name}")
@@ -213,9 +216,9 @@ class Island():
         for current_item in tradable_items:
             values = self.__item_cost_revenue_income(destination_island_py, current_item)
             weight = self.links[destination_island_py]
+
             trade_rows.append([self.name, destination_island_py.name, current_item.name] + values + [weight, int(values[1]/weight)])
         return trade_rows
-
 
     def __item_cost_revenue_income(self, destination_island, py_item: Item) -> list: 
         purchase_cost = self.buy.item_modded_value(py_item) * self.world.ship.most_can_carry(py_item)

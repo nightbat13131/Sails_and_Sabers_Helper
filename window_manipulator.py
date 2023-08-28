@@ -102,7 +102,7 @@ class Cartographer():
     # scale = 100
     padding = 10
     island_width = 10
-    island_shore = 5
+    island_shore = 2
     # island_stretch = scale - padding - island_width
     # parent_island_rotate = math.radians(-75)  # convert degress to radians
     # arrow_width = 5
@@ -129,11 +129,12 @@ class Cartographer():
         for island_name, island_py in self.world.island_holder.items():
             x, y = island_py.loc_x_y
             if debug: print(f"drawing {island_name} {(x, y)=} ")
-            if island_py.shape is not None:
-                self.canvas.draw_polygon(
-                    points = island_py.shape, fill_color=helper.ISLAND_BODY_1,
-                    line_color=helper.WATER_HIGHLIGHT, line_width = self.island_shore
-                )
+            if island_py.shapes is not None:
+                for each_shape in island_py.shapes:
+                    self.canvas.draw_polygon(
+                        points = each_shape, fill_color=helper.ISLAND_BODY_1,
+                        line_color=helper.WATER_HIGHLIGHT, line_width = self.island_shore
+                    )
             else:
                 self.canvas.draw_circle((x, y), self.island_width, fill_color=helper.ISLAND_BODY_1, line_color=helper.WATER_HIGHLIGHT, line_width = self.island_shore)
             self.canvas.draw_text(text = island_name, location = (x, y), color=helper.ISLAND_NAME_TEXT_COLOR, font=None, angle=0, text_location=helper.CENTER)
