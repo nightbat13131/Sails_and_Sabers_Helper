@@ -77,11 +77,15 @@ BEST_LONG_PATH_BUTTON_KEY = f"-{TAB_2_TITLE} {BEST_LONG_PATH_BUTTON_TEXT} Key -"
 
 #### ---- Map Colors ---- ####
 
-WATER = "deep sky blue" # 'light sea green'
+WATER = 'dark turquoise' # "deep sky blue" # 'light sea green'
 WATER_HIGHLIGHT = 'pale turquoise'
 ISLAND_BODY_0 = 'saddle brown'
-ISLAND_BODY_1 = 'brown'
+ISLAND_BODY_1 = 'chocolate4' # 'brown'
 ISLAND_NAME_TEXT_COLOR = 'black'
+SHIP_HULL_FILL = 'tan3'
+SHIP_HULL_LINE = 'sienna4'
+SHIP_SAIL_FILL = 'ivory2' # 'white'
+SHIP_SAIL_LINE = 'ivory3' 
 
 ## -- Ship and Ship's Table -- ##
 

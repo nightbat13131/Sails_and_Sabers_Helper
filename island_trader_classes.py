@@ -1,5 +1,6 @@
 import json 
 import pandas
+from copy import deepcopy
 
 debug = False
 
@@ -166,7 +167,7 @@ class Island():
         self.buy = Item_Bag(type_key = self.BUYING_KEY, dict_objs = dict_obj[self.BUYING_KEY], world = world)
         self.loc_x_y = tuple(dict_obj[self.LOCATION_KEY])
         self.shapes = self.shifted_shape(dict_obj[self.SHAPE_KEY])
-        self.dock = self.__x_y_shift(dict_obj[self.DOCK_KEY])
+        self.dock = self.__x_y_shift_center(dict_obj[self.DOCK_KEY])
         
     @property
     def __link_count(self):
@@ -181,16 +182,27 @@ class Island():
     def y(self):
         return self.loc_x_y[1]
     
-    def __x_y_shift(self, point: list or tuple) -> tuple:
+    def __x_y_shift_center(self, point: list or tuple) -> tuple:            
+        if debug: print(point)
         return (point[0]+self.x, point[1]+self.y)
 
-    def shifted_shape(self, shapes_array) -> list:
+    def __x_y_shift_dock(self, point: list or tuple, focus = None) -> tuple: 
+        if debug: print(point)
+        x = self.dock[0]
+        y = self.dock[1]
+        return (point[0]+x, point[1]+y)
+
+    def shifted_shape(self, shapes_array, mode = 'center') -> list:
+
         if debug: print("shifted_shape", self.name, shapes_array )
         if shapes_array == None:
             return None
         for index_0, each_shape in enumerate(shapes_array):
             for index_1, each_pair in enumerate(each_shape):
-                shapes_array[index_0][index_1] = self.__x_y_shift(each_pair)
+                if mode == 'center':
+                    shapes_array[index_0][index_1] = self.__x_y_shift_center(each_pair)
+                else: 
+                    shapes_array[index_0][index_1] = self.__x_y_shift_dock(each_pair)
         return shapes_array
 
     def reset_bags(self):
@@ -287,11 +299,14 @@ class Ship():
        
     @property
     def sail_shape(self):
-        return self.current_location.shifted_shape(self.__sail_shape)
+        safe_shape_array = deepcopy(self.__sail_shape)
+        return self.current_location.shifted_shape(safe_shape_array, mode= 'dock')
 
     @property
     def hull_shape(self):
-        return self.current_location.shifted_shape(self.__hull_shape)
+        safe_shape_array = deepcopy(self.__hull_shape)
+        return self.current_location.shifted_shape(safe_shape_array, mode= 'dock')
+
 
     def set_location(self, new_island) -> None:
         try:

@@ -122,6 +122,22 @@ class Cartographer():
         self.canvas.draw_rectangle(self.bottom_left, self.top_right, helper.WATER) 
         self.draw_islands()
         self.draw_arrows(table)
+        self.draw_ship()
+
+    def draw_arrows(self, table):
+        for each in table: # self.world.best_outbound_trades.values.tolist():
+            item_name = each[2]
+            profit = each[3]
+            if profit == None or item_name == self.world.NO_MATCH:
+                return
+            else:
+                from_name = each[0]
+                to_name = each[1]
+                holder = self.world.island_holder
+                from_island_py = holder[from_name]
+                to_island_py = holder[to_name]
+
+                Arrow(self.canvas, from_island_py, to_island_py, item_name, profit)
 
     def draw_islands(self) -> None:
         if debug: print("draw_islands")
@@ -139,22 +155,20 @@ class Cartographer():
                 self.canvas.draw_circle((x, y), self.island_width, fill_color=helper.ISLAND_BODY_1, line_color=helper.WATER_HIGHLIGHT, line_width = self.island_shore)
             self.canvas.draw_text(text = island_name, location = (x, y), color=helper.ISLAND_NAME_TEXT_COLOR, font=None, angle=0, text_location=helper.CENTER)
 
+    def draw_ship(self) -> None: 
+        # ship has sail_shape and hull_shape. 
+        # these are already writen to be adjusted to center around the island's dock_x_y
+        for each_sail_shape in self.world.ship.sail_shape: 
+            self.canvas.draw_polygon(
+                points = each_sail_shape, fill_color = helper.SHIP_SAIL_FILL, 
+                line_color = helper.SHIP_SAIL_LINE, line_width = 2)
+        for each_hull_shape in self.world.ship.hull_shape: 
+            self.canvas.draw_polygon(
+                points = each_hull_shape, fill_color = helper.SHIP_HULL_FILL, 
+                line_color = helper.SHIP_HULL_LINE, line_width = 2)
+        pass
 
-
-    def draw_arrows(self, table):
-        for each in table: # self.world.best_outbound_trades.values.tolist():
-            item_name = each[2]
-            profit = each[3]
-            if profit == None or item_name == self.world.NO_MATCH:
-                return
-            else:
-                from_name = each[0]
-                to_name = each[1]
-                holder = self.world.island_holder
-                from_island_py = holder[from_name]
-                to_island_py = holder[to_name]
-
-                Arrow(self.canvas, from_island_py, to_island_py, item_name, profit)
+    
 
 
 class HandOfGod():
