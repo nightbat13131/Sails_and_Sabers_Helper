@@ -5,8 +5,8 @@ import PySimpleGUI as sg
 debug = False
 
 class Arrow():
-    cut_short = 10
-    line_thickness = 4
+    cut_short = 11
+    line_thickness = 3
     color = 'gray70'
     text_color = 'black'
     arrow_angle = math.radians(20)
@@ -25,7 +25,7 @@ class Arrow():
 
     @property
     def start_point(self):
-        output = self.point_from_radian(self.from_island, self.radian_forward, self.cut_short)
+        output = self.point_from_radian(self.from_island, self.radian_forward, self.cut_short+2)
         return output
     
     @property
@@ -91,7 +91,7 @@ class Arrow():
         # drawing line
         self.canvas.draw_line(self.end_point, self.start_point, color = self.color, width = self.line_thickness)
         # draw arrow
-        self.canvas.draw_polygon(points = self.triangle_points, fill_color = self.color)
+        self.canvas.draw_polygon(points = self.triangle_points, fill_color = self.color , line_width = self.line_thickness, line_color = self.color  )
         # draw text
         text0 = f"{self.item_name}\n{self.value}\n\n"
         self.canvas.draw_text(text = text0, location = self.midpoint, angle = math.degrees(self.radian_forward), color = self.text_color, font=None, text_location=helper.CENTER )
@@ -153,7 +153,7 @@ class Cartographer():
                     )
             else:
                 self.canvas.draw_circle((x, y), self.island_width, fill_color=helper.ISLAND_BODY_1, line_color=helper.WATER_HIGHLIGHT, line_width = self.island_shore)
-            self.canvas.draw_text(text = island_name, location = (x, y), color=helper.ISLAND_NAME_TEXT_COLOR, font=None, angle=0, text_location=helper.CENTER)
+            self.canvas.draw_text(text = island_name, location = (x, y+3), color=helper.ISLAND_NAME_TEXT_COLOR, font=None, angle=0, text_location=helper.CENTER)
 
     def draw_ship(self) -> None: 
         # ship has sail_shape and hull_shape. 
