@@ -15,7 +15,6 @@ bottom_left = (scale * -1, scale * -1)
 top_right = (scale, scale)
 
 island_list = list(world.island_holder.keys())
-# mod_list = list(bl.Item_Bag.item_modifier_keys.keys())
 
 # define menu items
 reset_menu =  ["Reset", [st.CLEAR_SELECTED_ISLAND, st.CLEAR_ALL_ISLANDS]]
@@ -83,8 +82,6 @@ best_1_out_island_tab = [
 best_long_path_graph = sg.Graph(
     canvas_size = (canvas_size), graph_bottom_left = bottom_left, graph_top_right = top_right,
     background_color = st.WATER, 
-#    enable_events=True, 
-#    drag_submits=True, 
     key=st.BEST_LONG_PATH_GRAPH_KEY)
 
 best_long_path_trade_table = sg.Table(values=world.best_long_path_dummy.values.tolist(), headings=list(world.best_long_path_dummy),

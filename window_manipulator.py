@@ -31,8 +31,6 @@ class Arrow():
     @property
     def end_point(self):
         output = self.point_from_radian(self.to_island, self.radian_backward, self.cut_short)
-        # output = self.point_from_radian(self.to_island, math.pi, self.cut_short)
-        # output = self.to_island
         return output
 
     @property
@@ -98,20 +96,12 @@ class Arrow():
 
 
 class Cartographer():
-    #canvas_size = (500, 500)
-    # scale = 100
-    padding = 10
     island_width = 10
     island_shore = 2
-    # island_stretch = scale - padding - island_width
-    # parent_island_rotate = math.radians(-75)  # convert degress to radians
-    # arrow_width = 5
 
     def __init__(self, world, canvas, canvas_key) -> None:
         self.world = world
-        self.canvas = canvas  
-        # self.canvas_key = canvas_key
-        # self.scale = abs(canvas.BottomLeft[0])      
+        self.canvas = canvas      
         self.bottom_left = canvas.BottomLeft
         self.top_right = canvas.TopRight
         self.canvas_size = canvas.CanvasSize
@@ -157,7 +147,7 @@ class Cartographer():
 
     def draw_ship(self) -> None: 
         # ship has sail_shape and hull_shape. 
-        # these are already writen to be adjusted to center around the island's dock_x_y
+        # these are already writen to return as centered around the correct island's dock_x_y
         for each_sail_shape in self.world.ship.sail_shape: 
             self.canvas.draw_polygon(
                 points = each_sail_shape, fill_color = helper.SHIP_SAIL_FILL, 
@@ -209,12 +199,8 @@ class HandOfGod():
                 self.clear_all_islands_bags()
             case helper.REMOVE_ITEM_BUTTON_KEY:
                 self.remove_item()
-        #   case helper.SHIP_CAPASITY_UPDATE:
-        #       self.ship_update_capacity_triggered()
             case helper.ISLAND_SELECTED_BUTTON_KEY:
                 self.update_selected_island()
-        #   case helper.SHIP_BARGAINING_UPDATE:
-        #       self.ship_update_bargain_triggered()
             case helper.TRAVEL_ISLAND_BUTTON_KEY:
                 self.travel_to()
             case helper.UPDATE_BAG_BUTTON_KEY:
@@ -337,10 +323,8 @@ class HandOfGod():
 
     def ship_update_values(self) -> None:
         if debug: print(f"ship_update_values")
-        # need to send update for C, B T, then refresh the screen, then send conformation 
         self.send_ship_update_capacity()
         self.send_ship_update_bargain()
-        # self.send_ship_update_travel_points()
         self.refresh_dispaly()
         self.send_confirmation(f"Update to ship successful.")
 
@@ -354,7 +338,6 @@ class HandOfGod():
         else:  # try was successful
             if focus_value < 0:
                 self.__error_negative_value_popup(focus_value=focus_value, focus_name=helper.BARGAINING_POWER)
-                # sg.popup_error(f"-- {focus_value} is an Invalid Entry for {helper.TRAVEL_POINTS} -- \nPlease enter new value that is 0 greater. \n Example: '9'")
             else:            
                 self.world.ship.set_bargaining_power(focus_value)
         self.window[helper.SHIP_BARGAINING_INPUT].update(value= str(self.world.ship.bargaining_power_pct)+'%') # useful if # used without % or if an invalid text had been entered
@@ -385,7 +368,6 @@ class HandOfGod():
         else: 
             if focus_value < 0:
                 self.__error_negative_value_popup(focus_value=focus_value, focus_name=helper.TRAVEL_POINTS)
-                # sg.popup_error(f"-- {focus_value} is an Invalid Entry for {helper.TRAVEL_POINTS} -- \nPlease enter new value that is 0 greater. \n Example: '9'")
             else:
                 self.world.ship.travel_points = focus_value
         if debug: print(f"{self.world.ship.travel_points=}")
@@ -452,9 +434,6 @@ class HandOfGod():
         else:
             self.send_confirmation("Not saved")
             pass
-        # then need to trigger real save if "yes"
-        #then send conformation of save
-        # if no, sent conformation of NOT saved
 
     def refresh_dispaly(self)-> None:
         if debug: print(f"refresh_dispaly")
