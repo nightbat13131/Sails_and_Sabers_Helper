@@ -5,7 +5,7 @@ WELCOME_STRING = "Bloodline: Heros of Lisths - Sails and Sabers helper"
 BLANK = ""
 CENTER = 'center'
 CLEAR = 'Clear'
-LOCATION = 'Location'
+LOCATION = 'Location: {}'
 FRAME_KEY = "-Frame Key-"
 LEFT = "left"
 # GRAPH = "graph"
@@ -59,6 +59,8 @@ REMOVE_ITEM_BUTTON_KEY = "-Remove Item Button key-"
 
 ## -- Maps and Maps' Tables -- ##
 
+MAP_TITLE = "Maps"
+
 TAB_1_TITLE = "Each Island's Best Outgoing Trade"
 BEST_1_OUT_GRAPH_KEY = f"-{TAB_1_TITLE} Graph Key-"
 BEST_1_OUT_TABLE_KEY = f"-{TAB_1_TITLE} Table Key-"
@@ -92,7 +94,8 @@ SHIP_SAIL_LINE = 'ivory3'
 TRAVEL_ISLAND_NAME_PRMOPT = 'Select an Island to Travel to'
 TRAVEL_ISLAND_NAME_KEY = '-holder for current location island'
 TRAVEL_ISLAND_BUTTON_KEY ='-Destination Selected-'
-CONNECTIONS = "All Connections to current Island"
+CONNECTIONS = " All Paths Out Of {} "
+CONNECTIONS_TABLE_TITLE_KEY = "-connections table title key-"
 LOCATION_KEY = '-current location display key-'
 
 SHIP_TRADE_TABLE_KEY = "-Ship Trade Table Key-"

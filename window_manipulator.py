@@ -358,7 +358,7 @@ class HandOfGod():
                 self.world.ship.set_capacity(focus_value)
         if debug: print(f'{self.world.ship.capacity = }')
 
-    def send_ship_update_travel_points(self) -> None:
+    def send_ship_update_travel_points(self) -> None:  # was removed as this ended up not being used in the recursive calculation
         focus_value = self.values[helper.TRAVEL_POINTS_INPUT]
         if debug: print(f"send_ship_travel_points {focus_value=}")
         try:
@@ -382,7 +382,8 @@ class HandOfGod():
         island_py = self.world.island_holder[next_island]
         if debug: print(f"travel_to: {next_island}")
         self.world.ship.set_location(island_py)
-        self.window[helper.LOCATION_KEY].update(next_island)
+        self.window[helper.CONNECTIONS_TABLE_TITLE_KEY].update(helper.CONNECTIONS.format(next_island))
+        self.window[helper.LOCATION_KEY].update(helper.LOCATION.format(next_island))
         self.refresh_dispaly()
         self.send_confirmation(f"Traveled to {next_island}.")
         
