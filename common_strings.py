@@ -40,6 +40,9 @@ SELECT_ISLAND_NAME_KEY = '-holder for currently selected island'
 SELECTED_ITEM_KEY = '-selected-item-holder-'
 SELECTED_ITEM_MOD_KEY = '-selected_item_mod_holder-'
 
+SELECT_ISLAND_DISPLAY_FRAME_KEY = '-Frame to display or hide island bag settings key-'
+
+
 DISPLAY_ITEM_VALUE = '-displaying_item_value_after_mod applied'
 SELLING_HEADER = 'Sell (Selling TO the island)'
 BUYING_HEADER = 'Buy (Buying FROM the island)'
@@ -50,9 +53,9 @@ ITEM_PROMPT = '-chose item-'
 SELLING_KEY_NAME_PREFIX = '-Selling-Name-'
 BUYING_KEY_NAME_PREFIX = '-Buying-Name-'
 
-AUTO_POPULATE_BUY_BUTTON_TEXT = "^^^^^"
+AUTO_POPULATE_BUY_BUTTON_TEXT = "<<<<<"
 AUTO_POPULATE_BUY_KEY = '-AUTO_POPULATE_BUY_KEY-'
-AUTO_POPULATE_SELL_BUTTON_TEXT = "vvvvv"
+AUTO_POPULATE_SELL_BUTTON_TEXT = ">>>>>"
 AUTO_POPULATE_SELL_KEY = '-AUTO_POPULATE_SELL_KEY-'
 UPDATE_BAG_BUTTON_KEY = '-Update_bags_button_key-'
 REMOVE_ITEM_BUTTON_KEY = "-Remove Item Button key-"
@@ -111,7 +114,7 @@ TRAVEL_POINTS_INPUT = '-TRAVEL_POINTS_INPUT'
 UPDATE_SHIP = "Update Ship"
 UPDATE_SHIP_KEY = '-UPDATE_SHIP_KEY-'
 
-MODE_HEADER = "Select focus value for calculations: "
+MODE_HEADER = "Select Focus Mode For Calculations: "
 WORLD_MODE = "world_mode"
 WORLD_MODE_KEY = "-World mode key:-"
 

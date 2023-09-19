@@ -252,7 +252,7 @@ class HandOfGod():
 
     def populate_bag_column(self, selected_island_py) -> None:
         if debug: print(f"populate_bag_column: {selected_island_py.name = }")
-        self.window[helper.SELECTED_ISLAND_NAME_DISPLAY_KEY].update(f"{selected_island_py.name}")  # update onscreen display
+        self.window[helper.SELECTED_ISLAND_NAME_DISPLAY_KEY].update(f"{helper.SELECTED_HEADER_PREFIX} {selected_island_py.name}")  # update onscreen display
         self.populate_bag_column_details(selected_island_py, helper.SELL_ITEM)
         self.populate_bag_column_details(selected_island_py, helper.BUY_ITEM)
 
@@ -411,8 +411,8 @@ class HandOfGod():
             return
         else:
             # show bag edit area
-            self.window[helper.SELL_ITEM+helper.FRAME_KEY].update(visible=True)
             self.window[helper.BUY_ITEM+helper.FRAME_KEY].update(visible=True)
+            self.window[helper.SELL_ITEM+helper.FRAME_KEY].update(visible=True)
             self.window[helper.REMOVE+helper.FRAME_KEY].update(visible=True)
             self.populate_bag_column(selected_island_py)
         self.send_confirmation(f'Island of {selected_island_py.name} selected.')
