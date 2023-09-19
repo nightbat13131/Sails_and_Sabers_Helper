@@ -31,10 +31,10 @@ header_row = [[sg.Text(st.HEADER_TEXT_DEFAULT, key = st.HEADER_TEXT, expand_x=Tr
 
 sell_form_layout = []
 buy_form_layout = []
-remove_form_layout = [[sg.Combo(list(world.item_holder.keys()), key = st.REMOVE_ITEM_KEY ), sg.Button(st.REMOVE, key = st.REMOVE_ITEM_BUTTON_KEY, expand_x=True)]]
+
 
 # populate repetive 6(12) rows for sell and buy
-buy_sell_row_count = 6  # future features: customize this number
+buy_sell_row_count = 6  # future features: customize this number ?
 for buyvssell, layout in ((st.BUY_ITEM, buy_form_layout), (st.SELL_ITEM, sell_form_layout)):
     [layout.append( 
     [sg.Combo(list(world.item_holder.keys()), key = st.SELECTED_ITEM_KEY+buyvssell+str(range_num)), 
@@ -42,38 +42,43 @@ for buyvssell, layout in ((st.BUY_ITEM, buy_form_layout), (st.SELL_ITEM, sell_fo
      sg.Text(st.BLANK, key = st.DISPLAY_ITEM_VALUE+buyvssell+str(range_num)) ]) 
      for range_num in range(buy_sell_row_count)]
 
-sell_form_layout.append([sg.Button(st.AUTO_POPULATE_BUY_BUTTON_TEXT, key = st.AUTO_POPULATE_BUY_KEY, expand_x=True)])
-buy_form_layout.append([sg.Button(st.AUTO_POPULATE_SELL_BUTTON_TEXT, key = st.AUTO_POPULATE_SELL_KEY, expand_x=True)])
+buy_from_frame =  sg.Frame(title=st.BUYING_HEADER , layout = buy_form_layout , key = st.BUY_ITEM+st.FRAME_KEY , expand_x = True)
 
-buy_from_frame =  sg.Frame(title=st.BUYING_HEADER , layout = buy_form_layout+[sg.Button(st.AUTO_POPULATE_BUY_BUTTON_TEXT, key = st.AUTO_POPULATE_BUY_KEY, expand_x=True)], key = st.BUY_ITEM+st.FRAME_KEY, expand_x = True, visible=True)
-sell_from_frame = sg.Frame(title=st.SELLING_HEADER , layout = sell_form_layout, key = st.SELL_ITEM+st.FRAME_KEY, expand_x = True, visible=True)
-remove_form_frame = sg.Frame(title=st.REMOVE_HEADER, layout = remove_form_layout, key = st.REMOVE+st.FRAME_KEY, expand_x=True, visible=True)
+bag_leftover_frame = sg.Frame(title=st.AUTO, layout = [
+    [sg.Button(st.AUTO_POPULATE_BUY_BUTTON_TEXT,  key = st.AUTO_POPULATE_BUY_KEY,  expand_y=True, expand_x=True)], 
+    [sg.Button(st.AUTO_POPULATE_SELL_BUTTON_TEXT, key = st.AUTO_POPULATE_SELL_KEY, expand_y=True, expand_x=True)]
+    ], expand_y=True)
 
-selected_island_frame = sg.Frame("Test", 
-   [[
+sell_from_frame = sg.Frame(title=st.SELLING_HEADER , layout = sell_form_layout, key = st.SELL_ITEM+st.FRAME_KEY, expand_x = True)
+
+remove_form_layout = [[sg.Combo(list(world.item_holder.keys()), key = st.REMOVE_ITEM_KEY, expand_x=True ), sg.Button(st.REMOVE, key = st.REMOVE_ITEM_BUTTON_KEY, expand_x=True)]]
+remove_form_frame = sg.Frame(title=st.REMOVE_HEADER.format(st.THE_ISLAND), layout = remove_form_layout, key = st.REMOVE+st.FRAME_KEY, expand_x=True)
+
+show_hide_bag_frame = sg.Frame(title = "show/hide", key = st.SELECT_ISLAND_DISPLAY_FRAME_KEY, layout = [ 
+    [
         buy_from_frame, 
+        bag_leftover_frame,
         sell_from_frame
     ],
     [remove_form_frame],
     [   sg.Button(st.UPDATE, key = st.UPDATE_BAG_BUTTON_KEY, expand_x=True), 
-        sg.Button(st.CLEAR, key = st.CLEAR_BAG_BUTTON_KEY, expand_x=True)    ] ]                               
-    , visible=True                             )
-
+        sg.Button(st.CLEAR, key = st.CLEAR_BAG_BUTTON_KEY, expand_x=True)    ] ]   
+                               ,expand_y =True , expand_x=True, visible=False
+                               )
 
 set_bag_values_column = [ 
-
-   [sg.Combo([st.SELECT_ISLAND_NAME_PRMOPT] + island_list, key = st.SELECT_ISLAND_NAME_KEY, default_value=st.SELECT_ISLAND_NAME_PRMOPT), sg.Button(st.SELECT, key = st.ISLAND_SELECTED_BUTTON_KEY)], 
-    [selected_island_frame]
+   [
+       sg.Combo([st.SELECT_ISLAND_NAME_PRMOPT] + island_list, key = st.SELECT_ISLAND_NAME_KEY, default_value=st.SELECT_ISLAND_NAME_PRMOPT), 
+       sg.Button(st.SELECT, key = st.ISLAND_SELECTED_BUTTON_KEY)
+    ],
+    [show_hide_bag_frame]
     ]
 
-#### ---  Map  Column  --- ####
-# generate graphs and maps
 
+#### ---  Map and Graph  Column  --- ####
 best_1_out_graph = sg.Graph(
     canvas_size = (canvas_size), graph_bottom_left = bottom_left, graph_top_right = top_right,
     background_color = st.WATER, 
-#    enable_events=True, 
-#    drag_submits=True, 
     key=st.BEST_1_OUT_GRAPH_KEY)
 
 best_1_out_trade_table = sg.Table(values=world.best_outbound_trades.values.tolist(), headings=list(world.best_outbound_trades),
@@ -81,7 +86,6 @@ best_1_out_trade_table = sg.Table(values=world.best_outbound_trades.values.tolis
     enable_events=True, expand_x=True, expand_y=True, enable_click_events=True)
 
 best_1_out_island_tab = [
-    #[sg.Text(st.TAB_1_TITLE, justification=st.CENTER, )], 
     [best_1_out_graph], 
     [best_1_out_trade_table]
 ]
@@ -96,7 +100,6 @@ best_long_path_trade_table = sg.Table(values=world.best_long_path_dummy.values.t
     enable_events=True, expand_x=True, expand_y=True, enable_click_events=True)
 
 best_long_path_island_tab = [
-    #[sg.Text(st.TAB_2_TITLE, justification=st.CENTER, )], 
     [best_long_path_graph], 
     [best_long_path_trade_table],
     [sg.Text(st.TIME_WARNING)], 
@@ -124,15 +127,12 @@ ship_layout = [
     ]   
     ] 
 
-mode_radio = [sg.Radio(mode_, group_id=st.WORLD_MODE, key = st.WORLD_MODE_KEY+ mode_, enable_events = True, default = mode_ == world.mode) for mode_ in world.POSIBLE_MODES]
-mode_frame = sg.Frame(title=st.MODE_HEADER, layout= [mode_radio] )
-
+mode_frame = sg.Frame(title=st.MODE_HEADER, layout= [[sg.Radio(mode_, group_id=st.WORLD_MODE, key = st.WORLD_MODE_KEY+ mode_, enable_events = True, default = mode_ == world.mode) for mode_ in world.POSIBLE_MODES]] )
 
 
 #### ---  Connection Table  --- ####
 
 connection_table = [  
-    
     [sg.Table(
         values=[values[1:] for values in world.trade_from_single_island().values.tolist()],
         headings=list(world.trade_from_single_island())[1:],
@@ -141,8 +141,8 @@ connection_table = [
         key= st.SHIP_TRADE_TABLE_KEY,
         expand_x=True, expand_y=True, enable_click_events=True)
     ]
-    
 ]
+
 connection_frame = sg.Frame(st.CONNECTIONS.format(initial_location),       
     [[sg.Table(
         values=[values[1:] for values in world.trade_from_single_island().values.tolist()],
@@ -155,14 +155,12 @@ connection_frame = sg.Frame(st.CONNECTIONS.format(initial_location),
     key = st.CONNECTIONS_TABLE_TITLE_KEY
     )
 
-
 #### ---  Footer Row  --- ####
-
 footer_row = [[sg.Text(f'{st.FOOTER_TEXT_PREFIX}None', key = st.FOOTER_TEXT, expand_x=True , justification='center')]]
 
 window_layout = [
     [sg.Menu(menu_def),
-        [sg.Frame("frame 1", header_row, expand_x=True)], # header / row1 
+        [sg.Frame(title = None, layout=header_row, expand_x=True, border_width=0)], # header / row1 
 
         [sg.Frame(st.MAP_TITLE,   
 
@@ -170,13 +168,15 @@ window_layout = [
                 [[sg.Tab(st.TAB_1_TITLE, best_1_out_island_tab),
                 sg.Tab(st.TAB_2_TITLE, best_long_path_island_tab)]])]],
         ),
-        sg.Frame("Rigth Side", 
+        sg.Frame(title = None, layout =  
             [
-                [sg.Frame(st.SELECT_ISLAND_NAME_PRMOPT, set_bag_values_column, expand_y=True, key = st.SELECTED_ISLAND_NAME_DISPLAY_KEY)],
-                [sg.Frame("Ship_",ship_layout )], 
-                [mode_frame],
-                [ connection_frame ]
-            ]
+                [sg.Frame(st.SELECT_ISLAND_NAME_PRMOPT, set_bag_values_column, size = (500,350), expand_y=True )],
+                [sg.Frame(st.SHIP, ship_layout )], 
+                [ connection_frame ],
+                [mode_frame]
+                
+            ], 
+            border_width=0
         )
         ],
     footer_row]

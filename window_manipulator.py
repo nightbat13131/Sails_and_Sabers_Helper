@@ -252,16 +252,19 @@ class HandOfGod():
 
     def populate_bag_column(self, selected_island_py) -> None:
         if debug: print(f"populate_bag_column: {selected_island_py.name = }")
-        self.window[helper.SELECTED_ISLAND_NAME_DISPLAY_KEY].update(f"{helper.SELECTED_HEADER_PREFIX} {selected_island_py.name}")  # update onscreen display
+        self.window[helper.SELECT_ISLAND_DISPLAY_FRAME_KEY].update(f"{helper.SELECTED_HEADER_PREFIX} {selected_island_py.name}")  # update onscreen display
         self.populate_bag_column_details(selected_island_py, helper.SELL_ITEM)
-        self.populate_bag_column_details(selected_island_py, helper.BUY_ITEM)
+        self.populate_bag_column_details(selected_island_py, helper.BUY_ITEM)       
 
     def populate_bag_column_details(self, selected_island_py, buyvssell) -> None:
         if debug: print(f"populate_bag_column_details: {selected_island_py.name = } {buyvssell}")
-        if buyvssell == helper.BUY_ITEM:
+        
+        if buyvssell == helper.BUY_ITEM: # select correct bag for udpate
             bag_in_use = selected_island_py.buy
+            self.window[helper.BUY_ITEM+helper.FRAME_KEY].update(helper.BUYING_HEADER.format(selected_island_py.name))
         else:
             bag_in_use = selected_island_py.sell
+            self.window[helper.SELL_ITEM+helper.FRAME_KEY].update(helper.SELLING_HEADER.format(selected_island_py.name))
         dict_in_use = list(bag_in_use.items())
         for index_num in range(6):    
             if index_num >= len(dict_in_use):
@@ -403,19 +406,19 @@ class HandOfGod():
     def update_selected_island(self) -> None:
         if debug: print("update_selected_island")
         selected_island_py = self.get_selected_island(name_only=False)
+        selected_island_name = self.get_selected_island(name_only=True)
         if selected_island_py == None: 
             # hide bag edit area
-            self.window[helper.SELL_ITEM+helper.FRAME_KEY].update(visible=False)
-            self.window[helper.BUY_ITEM+helper.FRAME_KEY].update(visible=False)
-            self.window[helper.REMOVE+helper.FRAME_KEY].update(visible=False)
+            self.window[helper.SELECT_ISLAND_DISPLAY_FRAME_KEY].update(visible=False)
             return
         else:
             # show bag edit area
-            self.window[helper.BUY_ITEM+helper.FRAME_KEY].update(visible=True)
-            self.window[helper.SELL_ITEM+helper.FRAME_KEY].update(visible=True)
-            self.window[helper.REMOVE+helper.FRAME_KEY].update(visible=True)
+            self.window[helper.SELECT_ISLAND_DISPLAY_FRAME_KEY].update(visible=True)
+            self.window[helper.SELECT_ISLAND_DISPLAY_FRAME_KEY].update(selected_island_name)
+            self.window[helper.REMOVE+helper.FRAME_KEY].update(helper.REMOVE_HEADER.format(selected_island_name))
+
             self.populate_bag_column(selected_island_py)
-        self.send_confirmation(f'Island of {selected_island_py.name} selected.')
+        self.send_confirmation(f'Island of {selected_island_name} selected.')
 
     def update_world_mode(self, text):
         if debug: print(f"update_world_mode {text}")

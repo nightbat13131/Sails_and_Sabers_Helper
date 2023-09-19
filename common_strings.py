@@ -18,8 +18,10 @@ TRAVEL = 'Travel'
 UPDATE = "Update"
 YES = "Yes"
 
+
 ## -- Item Menus -- ##
 
+THE_ISLAND = "the island"
 HEADER_TEXT = '-HEADER_TEXT-'
 HEADER_TEXT_DEFAULT = WELCOME_STRING.center(75, "~")
 
@@ -44,18 +46,19 @@ SELECT_ISLAND_DISPLAY_FRAME_KEY = '-Frame to display or hide island bag settings
 
 
 DISPLAY_ITEM_VALUE = '-displaying_item_value_after_mod applied'
-SELLING_HEADER = 'Sell (Selling TO the island)'
-BUYING_HEADER = 'Buy (Buying FROM the island)'
-REMOVE_HEADER = 'Remove item from the Island'
+SELLING_HEADER = 'Selling TO {}'
+BUYING_HEADER = 'Buying FROM {}'
+REMOVE_HEADER = 'Remove item from {}'
 REMOVE_ITEM_KEY = "-REMOVE ITEM KEY-"
 ITEM_PROMPT = '-chose item-'
 
 SELLING_KEY_NAME_PREFIX = '-Selling-Name-'
 BUYING_KEY_NAME_PREFIX = '-Buying-Name-'
 
-AUTO_POPULATE_BUY_BUTTON_TEXT = "<<<<<"
+AUTO = "Auto"
+AUTO_POPULATE_BUY_BUTTON_TEXT = "<\n<\n<\n<"
 AUTO_POPULATE_BUY_KEY = '-AUTO_POPULATE_BUY_KEY-'
-AUTO_POPULATE_SELL_BUTTON_TEXT = ">>>>>"
+AUTO_POPULATE_SELL_BUTTON_TEXT = ">\n>\n>\n>"
 AUTO_POPULATE_SELL_KEY = '-AUTO_POPULATE_SELL_KEY-'
 UPDATE_BAG_BUTTON_KEY = '-Update_bags_button_key-'
 REMOVE_ITEM_BUTTON_KEY = "-Remove Item Button key-"
@@ -72,12 +75,11 @@ TAB_2_TITLE = "Best Long Path Between All Entered Islands"
 BEST_LONG_PATH_GRAPH_KEY = f"-{TAB_2_TITLE} Graph Key-"
 BEST_LONG_PATH_TABLE_KEY = f"-{TAB_2_TITLE} Table Key-"
 BEST_LONG_PATH_BUTTON_TEXT = "Calculate"
-TIME_WARNING = f"""Calculating the "Best Longest Path" takes several minutes 
-during which the program will be unresponsive. This tab only updates 
-with the "{BEST_LONG_PATH_BUTTON_TEXT}" button wereas the other tab updates with each change. Make 
-sure your Ship location is correct as that's the island the path 
-starts from. This calculation does take skipping islands into account. 
-Press the "{BEST_LONG_PATH_BUTTON_TEXT}" button when you are ready."""
+TIME_WARNING = f"""Calculating the "Best Longest Path" takes several minutes during which the program 
+will be unresponsive. This tab only updates with the "{BEST_LONG_PATH_BUTTON_TEXT}" button wereas the 
+other tab updates with each change. Make sure your Ship location is correct as that's 
+the island the path starts from. This calculation does take skipping islands into 
+account. Press the "{BEST_LONG_PATH_BUTTON_TEXT}" button when you are ready."""
 BEST_LONG_PATH_BUTTON_KEY = f"-{TAB_2_TITLE} {BEST_LONG_PATH_BUTTON_TEXT} Key -"
 
 #### ---- Map Colors ---- ####
@@ -114,7 +116,7 @@ TRAVEL_POINTS_INPUT = '-TRAVEL_POINTS_INPUT'
 UPDATE_SHIP = "Update Ship"
 UPDATE_SHIP_KEY = '-UPDATE_SHIP_KEY-'
 
-MODE_HEADER = "Select Focus Mode For Calculations: "
+MODE_HEADER = "Select Focus Mode For Calculations:"
 WORLD_MODE = "world_mode"
 WORLD_MODE_KEY = "-World mode key:-"
 
