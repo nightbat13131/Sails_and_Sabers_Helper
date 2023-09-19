@@ -2,7 +2,7 @@ import math
 import common_strings as helper
 import PySimpleGUI as sg
 
-debug = False
+debug = True
 
 class Arrow():
     cut_short = 11
@@ -108,13 +108,17 @@ class Cartographer():
 
         
     def draw_map(self, table):
-        if debug: print("draw_map")
+        if debug: print("Cartographer.draw_map")
         self.canvas.draw_rectangle(self.bottom_left, self.top_right, helper.WATER) 
         self.draw_islands()
         self.draw_arrows(table)
         self.draw_ship()
 
     def draw_arrows(self, table):
+        if debug: print("Cartographer.draw_arrows")
+        if debug: print(f"{table=} {len(table)=}")
+        if len(table) <= 1:
+            return 
         for each in table: # self.world.best_outbound_trades.values.tolist():
             item_name = each[2]
             profit = each[3]
@@ -130,7 +134,7 @@ class Cartographer():
                 Arrow(self.canvas, from_island_py, to_island_py, item_name, profit)
 
     def draw_islands(self) -> None:
-        if debug: print("draw_islands")
+        if debug: print("Cartographer.draw_islands")
         
         for island_name, island_py in self.world.island_holder.items():
             x, y = island_py.loc_x_y
@@ -146,6 +150,7 @@ class Cartographer():
             self.canvas.draw_text(text = island_name, location = (x, y+3), color=helper.ISLAND_NAME_TEXT_COLOR, font=None, angle=0, text_location=helper.CENTER)
 
     def draw_ship(self) -> None: 
+        if debug: print("Cartographer.draw_ship")
         # ship has sail_shape and hull_shape. 
         # these are already writen to return as centered around the correct island's dock_x_y
         for each_sail_shape in self.world.ship.sail_shape: 

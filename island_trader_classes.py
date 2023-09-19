@@ -2,7 +2,7 @@ import json
 import pandas
 from copy import deepcopy
 
-debug = False
+debug = True
 
 
 class Json_file_Manager(): 
@@ -382,11 +382,6 @@ class World():
             island_0.add_link(island_1, weight)
             island_1.add_link(island_0, weight)
         return
-        for d_edge in Json_file_Manager.get_secondary_object("edges", "directed edges"):  # only included as a graphing exersize
-            island_from = self.island_holder[d_edge["from"]]
-            island_to =   self.island_holder[d_edge["to"]]
-            weight = d_edge["weight"]
-            island_from.add_link(island_to, weight)
 
     def process_island_item_update(self, island_py: Island, buyvsell:str, item_name:str, mod:str) -> None :
         if debug: print(f"World.process_island_item_update {island_py.name, buyvsell, item_name, mod}")
@@ -398,6 +393,7 @@ class World():
         return
 
     def reset_all_island_bags(self) -> None:
+        if debug: print(f"World.reset_all_island_bags")
         for each_island in self.island_holder:
             each_island = self.island_holder[each_island]
             each_island.reset_bags()
@@ -417,6 +413,7 @@ class World():
         if debug: print(self.trade_dataframe)
 
     def trade_from_single_island(self, focus_island: Island = None) -> pandas.DataFrame:
+        if debug: print(f"World.trade_from_single_island")
         if focus_island == None:
             focus_island = self.ship.current_location
         if type(focus_island) == Island:  # display call will likely send str instead of Island
@@ -424,6 +421,7 @@ class World():
         return self.trade_dataframe.query(f'{self.FROM} == "{focus_island}"')
     
     def set_mode(self, new_mode) -> None:
+        if debug: print(f"World.set_mode")
         if new_mode not in self.POSIBLE_MODES:
             return 
         else:
@@ -431,6 +429,7 @@ class World():
     
     @property
     def best_outbound_trades(self ) -> pandas.DataFrame:
+        if debug: print(f"World.best_outbound_trades @property")
         mode_headers = [self.FROM, self.TO, self.ITEM, self.mode]
         try: 
             data = list()
@@ -443,6 +442,7 @@ class World():
             return self.trade_dataframe
 
     def __add_to_multi_holer(self, new_list, max_items = 1):
+        if debug: print(f"World.__add_to_multi_holer")
         new_value = new_list[0]
         current_minimum = self.__long_path_holder[-1][0]    
         if (len(self.__long_path_holder) == max_items) and (new_value <= current_minimum):
@@ -459,14 +459,17 @@ class World():
 
     @property
     def long_path_headers_panda(self):
+        if debug: print(f"World.long_path_headers_panda @property")
         return [self.FROM, self.TO, self.ITEM, self.mode, self.MOVEMENT]
     
     @property
     def long_path_headers_display(self):
+        if debug: print(f"World.long_path_headers_display @property")
         return [self.FROM, self.TO, self.ITEM, self.VALUES, self.MOVEMENT]
 
 
     def __calculations_for_best_long_path(self, from_island_py: Island, remaining_movment_points: int, running_value = 0, running_path = [], indent = ""):
+        # no debug printout as this is recursive and printout will kill it.
         if remaining_movment_points <= 0:  # send results of path to logger 
             # print(indent, f"I hit the base: {running_value=}, {running_path=}")
             self.__add_to_multi_holer([running_value] + running_path)
@@ -497,20 +500,29 @@ class World():
 
     @property
     def best_long_path(self, steps = 8):
+        if debug: print(f"World.best_long_path")
         # start of best loop can be no more than 2 steps away
         # gives 6 steps to travel loop - feed good for verifying high value.
         self.__long_path_holder = [[0, 0]]  # reset to hold new values
-        try:
-            self.__calculations_for_best_long_path(self.ship.current_location, steps)
-        except:
-            self.__add_to_multi_holer([1000000, ["A-best_long_path failed in some way", "B", "C", 4, 5]])
+        # try:
+        if debug: print(f"World.best_long_path - pre call __calculations_for_best_long_path")
+        self.__calculations_for_best_long_path(self.ship.current_location, steps)
+        #except:
+        #    self.__add_to_multi_holer([1000000, ["A-best_long_path failed in some way", "B", "C", 4, 5]])
+        # print(f"{self.__long_path_holder=}")
+        if debug: print(f"World.best_long_path - post call __calculations_for_best_long_path")
+        if debug: print(f"{self.__long_path_holder=}")
+        if self.__long_path_holder ==  [[0, 0]]: # no change after having been reset
+            return self.best_long_path_dummy
         temp_table = pandas.DataFrame(self.__long_path_holder[0][1:], columns=self.long_path_headers_panda)
         return temp_table.rename(columns={self.mode: self.VALUES})
     
     @property
     def best_long_path_dummy(self, steps = 8):
+        if debug: print(f"World.best_long_path_dummy @property")
         temp_table = pandas.DataFrame([self.long_path_headers_panda], columns=self.long_path_headers_display)
         return temp_table.rename(columns={self.mode: self.VALUES})
 
 
+# self = World()         
 
