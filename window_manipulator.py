@@ -2,7 +2,7 @@ import math
 import common_strings as helper
 import PySimpleGUI as sg
 
-debug = True
+debug = False
 
 class Arrow():
     cut_short = 11
@@ -162,8 +162,6 @@ class Cartographer():
                 points = each_hull_shape, fill_color = helper.SHIP_HULL_FILL, 
                 line_color = helper.SHIP_HULL_LINE, line_width = 2)
         pass
-
-    
 
 
 class HandOfGod():

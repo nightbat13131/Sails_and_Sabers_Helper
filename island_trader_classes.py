@@ -2,8 +2,7 @@ import json
 import pandas
 from copy import deepcopy
 
-debug = True
-
+debug = False
 
 class Json_file_Manager(): 
     DEFAULT_FILE = "detault_data.json"
@@ -132,6 +131,8 @@ class Item_Bag(dict):
 
     def add_item(self, py_item, mod) -> None:
         if len(self) >= 6:  # block more than 6 items being in the bag.
+            if py_item in self:
+                self[py_item] = mod  # update if pressent
             return
         self.update({py_item: mod})
 
@@ -193,7 +194,6 @@ class Island():
         return (point[0]+x, point[1]+y)
 
     def shifted_shape(self, shapes_array, mode = 'center') -> list:
-
         if debug: print("shifted_shape", self.name, shapes_array )
         if shapes_array == None:
             return None
@@ -522,7 +522,4 @@ class World():
         if debug: print(f"World.best_long_path_dummy @property")
         temp_table = pandas.DataFrame([self.long_path_headers_panda], columns=self.long_path_headers_display)
         return temp_table.rename(columns={self.mode: self.VALUES})
-
-
-# self = World()         
 

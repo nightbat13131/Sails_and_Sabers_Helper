@@ -1,14 +1,13 @@
-WELCOME_STRING = "Bloodline: Heros of Lisths - Sails and Sabers helper"
+WELCOME_STRING = "Bloodline: Heros of Lithas - Sails and Sabers Helper"
 
 ## -- Generic Strings -- ##
 
 BLANK = ""
 CENTER = 'center'
 CLEAR = 'Clear'
-LOCATION = 'Location: {}'
+LOCATION = 'Currnet Location: {}'
 FRAME_KEY = "-Frame Key-"
 LEFT = "left"
-# GRAPH = "graph"
 NO = "No"
 NONE = 'None'
 REMOVE = "Remove"
@@ -17,7 +16,6 @@ SHIP = 'Ship'
 TRAVEL = 'Travel'
 UPDATE = "Update"
 YES = "Yes"
-
 
 ## -- Item Menus -- ##
 
@@ -33,7 +31,6 @@ CLEAR_SELECTED_ISLAND = 'Clear Selected Island'
 CLEAR_ALL_ISLANDS = 'Clear ALL Islands'
 SAVE_ENTRIES = 'Save All'
 SAVE_CONFORMATION_POPUP = "-SAVE_CONFORMATION_POPUP-"
-
 SELECTED_ISLAND_NAME_DISPLAY_KEY = '-SELECTED_ISLAND-'
 ISLAND_SELECTED_BUTTON_KEY = '-ISLAND SELECTED-'
 SELECTED_HEADER_PREFIX = "Setting Bags for:"
@@ -43,7 +40,6 @@ SELECTED_ITEM_KEY = '-selected-item-holder-'
 SELECTED_ITEM_MOD_KEY = '-selected_item_mod_holder-'
 
 SELECT_ISLAND_DISPLAY_FRAME_KEY = '-Frame to display or hide island bag settings key-'
-
 
 DISPLAY_ITEM_VALUE = '-displaying_item_value_after_mod applied'
 SELLING_HEADER = 'Selling TO {}'
@@ -70,7 +66,6 @@ MAP_TITLE = "Maps"
 TAB_1_TITLE = "Each Island's Best Outgoing Trade"
 BEST_1_OUT_GRAPH_KEY = f"-{TAB_1_TITLE} Graph Key-"
 BEST_1_OUT_TABLE_KEY = f"-{TAB_1_TITLE} Table Key-"
-
 TAB_2_TITLE = "Best Long Path Between All Entered Islands"
 BEST_LONG_PATH_GRAPH_KEY = f"-{TAB_2_TITLE} Graph Key-"
 BEST_LONG_PATH_TABLE_KEY = f"-{TAB_2_TITLE} Table Key-"
@@ -107,12 +102,8 @@ SHIP_TRADE_TABLE_KEY = "-Ship Trade Table Key-"
 
 CAPACITY = 'Capacity'
 SHIP_CAPASITY_INPUT = '-SHIP_CAPASITY_INPUT-'
-# SHIP_CAPASITY_UPDATE = '-SHIP_CAPASITY_UPDATE-'
 BARGAINING_POWER = 'Bargaining Power'
 SHIP_BARGAINING_INPUT = '-SHIP_BARGAINING_INPUT-'
-# SHIP_BARGAINING_UPDATE = '-SHIP_BARGAINING_UPDATE-'
-TRAVEL_POINTS = "Travel Points"
-TRAVEL_POINTS_INPUT = '-TRAVEL_POINTS_INPUT'
 UPDATE_SHIP = "Update Ship"
 UPDATE_SHIP_KEY = '-UPDATE_SHIP_KEY-'
 
@@ -124,5 +115,4 @@ WORLD_MODE_KEY = "-World mode key:-"
 
 FOOTER_TEXT = '-Footer_text-'
 FOOTER_TEXT_PREFIX = 'Last command: '
-TRAVEL_TO_PREFIX = '-Travel_to_'
 

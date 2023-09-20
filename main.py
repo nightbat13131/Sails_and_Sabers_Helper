@@ -13,8 +13,11 @@ canvas_size = (500, 500)
 scale = 100
 bottom_left = (scale * -1, scale * -1)
 top_right = (scale, scale)
-
 island_list = list(world.island_holder.keys())
+
+header1_size = 20
+
+sg.theme('SandyBeach')
 
 # define menu items
 reset_menu =  ["Reset", [st.CLEAR_SELECTED_ISLAND, st.CLEAR_ALL_ISLANDS]]
@@ -25,7 +28,7 @@ right_click_menu = reset_menu
 
 #### ---  Header  --- ####
 
-header_row = [[sg.Text(st.HEADER_TEXT_DEFAULT, key = st.HEADER_TEXT, expand_x=True , justification='center')]]
+header_row = [[sg.Text(st.HEADER_TEXT_DEFAULT, key = st.HEADER_TEXT, expand_x=True , justification='center', font = header1_size)]]
 
 #### ---  Bag Column  --- ####
 
@@ -97,7 +100,7 @@ best_long_path_graph = sg.Graph(
 
 best_long_path_trade_table = sg.Table(values=world.best_long_path_dummy.values.tolist(), headings=list(world.best_long_path_dummy),
     auto_size_columns=True, display_row_numbers=True, justification=st.CENTER, key= st.BEST_LONG_PATH_TABLE_KEY, num_rows = 8,
-    enable_events=True, expand_x=True, expand_y=True, enable_click_events=True)
+    enable_events=True, expand_x=True, expand_y=True, enable_click_events=True, hide_vertical_scroll=True  )
 
 best_long_path_island_tab = [
     [best_long_path_graph], 
@@ -139,7 +142,7 @@ connection_table = [
         enable_events=True,
         auto_size_columns=True, display_row_numbers=False, justification=st.CENTER, 
         key= st.SHIP_TRADE_TABLE_KEY,
-        expand_x=True, expand_y=True, enable_click_events=True)
+        expand_x=True, expand_y=True, enable_click_events=True, num_rows=1)
     ]
 ]
 
@@ -150,7 +153,7 @@ connection_frame = sg.Frame(st.CONNECTIONS.format(initial_location),
         enable_events=True,
         auto_size_columns=True, display_row_numbers=False, justification=st.CENTER, 
         key= st.SHIP_TRADE_TABLE_KEY,
-        expand_x=True, expand_y=True, enable_click_events=True)
+        expand_x=True, expand_y=True, enable_click_events=True, num_rows=17)
     ]],
     key = st.CONNECTIONS_TABLE_TITLE_KEY
     )
