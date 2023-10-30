@@ -21,9 +21,9 @@ sg.theme('SandyBeach')
 
 # define menu items
 reset_menu =  ["Reset", [st.CLEAR_SELECTED_ISLAND, st.CLEAR_ALL_ISLANDS]]
-save_menu = ["Save", st.SAVE_ENTRIES]
+save_menu = ["File", [st.SAVE, st.SAVE_AS, st.LOAD] ]
 
-menu_def = [reset_menu , save_menu]
+menu_def = [save_menu, reset_menu  ]
 right_click_menu = reset_menu
 
 #### ---  Header  --- ####
@@ -85,7 +85,7 @@ best_1_out_graph = sg.Graph(
     key=st.BEST_1_OUT_GRAPH_KEY)
 
 best_1_out_trade_table = sg.Table(values=world.best_outbound_trades.values.tolist(), headings=list(world.best_outbound_trades),
-    auto_size_columns=True, display_row_numbers=False, justification=st.CENTER, key= st.BEST_1_OUT_TABLE_KEY,
+    auto_size_columns=False, display_row_numbers=False, justification=st.CENTER, key= st.BEST_1_OUT_TABLE_KEY,
     enable_events=True, expand_x=True, expand_y=True, enable_click_events=True)
 
 best_1_out_island_tab = [
@@ -140,7 +140,7 @@ connection_table = [
         values=[values[1:] for values in world.trade_from_single_island().values.tolist()],
         headings=list(world.trade_from_single_island())[1:],
         enable_events=True,
-        auto_size_columns=True, display_row_numbers=False, justification=st.CENTER, 
+        auto_size_columns=False, display_row_numbers=False, justification=st.CENTER, 
         key= st.SHIP_TRADE_TABLE_KEY,
         expand_x=True, expand_y=True, enable_click_events=True, num_rows=1)
     ]
@@ -150,6 +150,7 @@ connection_frame = sg.Frame(st.CONNECTIONS.format(initial_location),
     [[sg.Table(
         values=[values[1:] for values in world.trade_from_single_island().values.tolist()],
         headings=list(world.trade_from_single_island())[1:],
+        col_widths = 20,
         enable_events=True,
         auto_size_columns=True, display_row_numbers=False, justification=st.CENTER, 
         key= st.SHIP_TRADE_TABLE_KEY,
@@ -200,7 +201,7 @@ while True:
 
     # end program if closed
     if event == 'Exit' or event == sg.WIN_CLOSED:
-        hand_of_god.save_triggered()
+        hand_of_god.save_as_triggered()
         break
     else:
         hand_of_god.process_event_input(event, values) 

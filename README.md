@@ -42,15 +42,18 @@ The focus island for this table is set in the "Ship" section. It displays all ou
 Incoming gold from selling items - Outgoing gold to from initial items' purchase.
 - useful when you need to increase your overall gold.
 ##### Revenue/MC: 
-ncoming gold from selling items / Trade Points cost to move from current island to destination island. 
+Incoming gold from selling items / Trade Points cost to move from current island to destination island. 
 - Obtain The most gold for the Points Leaderboards per Trade Point. 
 ##### Revenue: 
 Incoming gold from selling items.
-- Obtain The most gold for the Points Leaderboards. While I think Revenue/MC is superior, I'm not going to make that desition for you. 
+- Obtain The most gold for the Points Leaderboards. While I think Revenue/MC is superior, I'm not going to make that desision for you. 
 
 ### Misc
-#### Save
-You can save your entries from the top menu. You are also prompted to save when you exit the tool. 
+#### Save or Save As
+You can save your entries from the top menu. You are also prompted to save when you exit the tool. Save As prompts you for a location and name first. If you have not loaded or saved during the current sesion, Save will trigger the Save As prompt. If Save/Save As fails, an error will show in the Conformation text.
+
+#### Load
+You can load information you saved via the Save or Save As option. Best long path will need to be recalculated.  If Load fails, an error will show in the Conformation text.
 
 #### Conformation
-There is conformation text at the bottom on the screen that will confirm most actions taken with the tool. 
+There is conformation text at the bottom on the screen that will confirm most actions taken with the tool. If an error prevents a save or load, the failed message will show here.  

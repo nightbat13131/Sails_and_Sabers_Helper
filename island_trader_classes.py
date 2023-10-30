@@ -1,102 +1,79 @@
 import json 
 import pandas
+import common_strings as st
 from copy import deepcopy
+from tkinter.filedialog import askopenfile # open - import
+from tkinter.filedialog import asksaveasfilename # save as - export
+debug = True
 
-debug = False
+class File_Manager(): 
+    def __init__(self, world) -> None:
+        self.file_path = None
+        self.world = world
 
-class Json_file_Manager(): 
-    DEFAULT_FILE = "detault_data.json"
-    SAVE_FILE = "saved_info.json" 
-    ENVIRONMENT_FOLDER = "Bloodline_Hearos_of_Lithas\\"
-    # so this will get the JSON object (or parts of it) from the file 
-    # and send any modifications to the file 
-    def __init__(self) -> None:
-        pass
+    def get_dict(self):
+        return deepcopy(st.default_save_format)
 
-    @classmethod
-    def __file_exists_check(cls, func):
-        # idea for a decorator, but can't get decorators to stack with @classmethod yet
-        # if file NOT found
-            # make a copy of defualt and give it the save name
-        return func 
-    
-    @classmethod
-    def clear_save_file(cls) -> None:
-        # just replace save file with default?
-        pass
-
-    @classmethod
-    def __get_file_content(cls):
-        if debug: print(f'Json_file_Manager.__get_file_content')
-        try: # because Visual Studio code is breaking my heart
-            with open(cls.SAVE_FILE, 'r') as file:
-                return json.load(file)
-        except:
-            save_file = cls.ENVIRONMENT_FOLDER + cls.SAVE_FILE
-            with open(save_file, 'r') as file:
-                return json.load(file)
-
-    @classmethod 
-    def __set_file_content(cls, new_dict_content) -> None:
-        if debug: print(f'Json_file_Manager.set_file_content: {new_dict_content= }')
-        try: # because Visual Studio code is breaking my heart
-            with open(Json_file_Manager.SAVE_FILE, "w") as file:
-                file.write(json.dumps(new_dict_content))
-        except: 
-            save_file = cls.ENVIRONMENT_FOLDER + cls.SAVE_FILE
-            with open(save_file, "w") as file:
-                file.write(json.dumps(new_dict_content))
-
-    @classmethod
-    def get_primary_object(cls, primary):
-        if debug: print(f'Json_file_Manager.get_primary_object: {primary= }')  # debug
-        return cls.__get_file_content()[primary]
-
-    @classmethod
-    def get_secondary_object(cls, primary, secondary):
-        if debug: print(f'Json_file_Manager.get_secondary_object: {primary= } {secondary= }')  # debug
-        object1 = cls.get_primary_object(primary)
-        # print(object1)
-        try:
-            return object1[secondary]
-        except:
-            for each in object1:
-                if each["name"] == secondary:
-                    return each
-
-    @classmethod
-    def save_game(cls, world) -> None:
-        if debug: print("Json_file_Manager.save_game: Start")
-        # get current save data
-        full_dict = cls.__get_file_content()
-        # update ship stats
-        full_dict = cls.__add_ship_to_save_data(full_dict, world.ship)
+    def __create_save_json(self) -> json: 
+        if debug: print(f"File_Manager.__create_save_json")
+        holder = self.get_dict()
+        holder = self.__add_ship_to_save_data(holder)
         # for each island, update each bag
-        for island_py in world.island_holder.values():
-            full_dict = cls.__add_one_island_to_save_data(full_dict, island_py)
-        # sent updated data to file
-        if debug: print(f"{len(full_dict) = }")
-        cls.__set_file_content(full_dict)
-        if debug: print("Json_file_Manager.save_game: Done")
+        for island_py in self.world.island_holder.values():
+            holder = self.__add_one_island_to_save_data(holder, island_py)
+        return json.dumps(holder)
 
-    @classmethod
-    def __add_ship_to_save_data(cls, full_dict, ship_py) -> dict : 
-        if debug: print(f"Json_file_Manager.__add_ship_to_save_data")
-        full_dict[ship_py.PRIMARY_KEY][ship_py.LOCATION_KEY]   = ship_py.current_location.name
-        full_dict[ship_py.PRIMARY_KEY][ship_py.CAPACITY_KEY]   = ship_py.capacity
-        full_dict[ship_py.PRIMARY_KEY][ship_py.BARGAINING_KEY] = ship_py.bargaining_power_pct
+    def save_as(self) -> bool:
+        if debug: print(f"File_Manager.save_as")
+        self.file_path = asksaveasfilename()
+        print(self.file_path)
+        return self.save()
+
+    def save(self) -> bool:
+        if debug: print(f"File_Manager.save")
+        if self.file_path is None: 
+            self.save_as()
+        # open in write and replace? 
+        save_content = self.__create_save_json()
+        was_success = False
+        try:
+            with open(self.file_path, "w") as save_file:
+                save_file.write(save_content)
+            was_success = True
+        except:
+            print("Saving failed")
+        return was_success
+    
+    def load(self) -> bool:
+        if debug: print(f"File_Manager.load")
+        was_successful = False
+        try:
+            loaded_file = askopenfile(title= "Choose .json to load")
+            file_content = json.load(loaded_file)
+            loaded_file.close()
+            self.world.ship.update_from_json(file_content[st.SHIP_PRIMARY_KEY])
+            for island_name, dict_obj in file_content[st.ISLAND_PRIMARY_KEY].items():
+                self.world.island_holder[island_name].update_from_json(dict_obj)
+            was_successful = True
+        except:
+            print("Load failed")
+        return was_successful
+        
+    def __add_ship_to_save_data(self, full_dict) -> dict : 
+        if debug: print(f"File_Manager.__add_ship_to_save_data")
+        full_dict[st.SHIP_PRIMARY_KEY][st.SHIP_LOCACTION_KEY]  = self.world.ship.current_location.name
+        full_dict[st.SHIP_PRIMARY_KEY][st.SHIP_CAPACITY_KEY]   = self.world.ship.capacity
+        full_dict[st.SHIP_PRIMARY_KEY][st.SHIP_BARGAINING_KEY] = self.world.ship.bargaining_power_pct
         return full_dict
 
-    @classmethod
-    def __add_one_island_to_save_data(cls, full_dict, island_py) -> dict:
-        if debug: print(f"Json_file_Manager.__add_one_island_to_save_data {island_py.name}")
-        full_dict[island_py.PRIMARY_KEY][island_py.name][island_py.SELLING_KEY] = dict(zip([str(item) for item in island_py.sell.keys()], island_py.sell.values()))
-        full_dict[island_py.PRIMARY_KEY][island_py.name][island_py.BUYING_KEY]  = dict(zip([str(item) for item in island_py.buy.keys()],  island_py.buy.values()))
-        return full_dict
-  
+    def __add_one_island_to_save_data(self, full_dict, island_py) -> dict:
+        if debug: print(f"File_Manager.__add_one_island_to_save_data {island_py.name}")
+        full_dict[st.ISLAND_PRIMARY_KEY][island_py.name][st.ISLAND_SELLING_KEY] = dict(zip([str(item) for item in island_py.sell.keys()], island_py.sell.values()))
+        full_dict[st.ISLAND_PRIMARY_KEY][island_py.name][st.ISLAND_BUYING_KEY]  = dict(zip([str(item) for item in island_py.buy.keys()],  island_py.buy.values()))
+        return full_dict   
+
 
 class Item():
-    PRIMARY_KEY = "items"
     
     def __init__(self, dict_obj) -> None:
         self.name = dict_obj["name"].title()
@@ -112,22 +89,20 @@ class Item():
 
 class Item_Bag(dict):
     item_modifier_keys = {'++': 30, '+': 15, 0: 0, '-': -15, '--': -30}   
-    SELLING_KEY = "selling"
-    BUYING_KEY = "buying"
 
-    def __init__(self, type_key, dict_objs = [], world = None) -> None:
+    def __init__(self, type_key, world = None) -> None:
         self.mode = type_key
-        self.bag_modifier = -1 if type_key == self.BUYING_KEY else 1  # buying takes away from purse, selling adds to it
+        self.bag_modifier = -1 if type_key == st.ISLAND_BUYING_KEY else 1  # buying takes away from purse, selling adds to it
         self.world = world
-        for item_name, mod in dict_objs.items():
-            self.__add_item_from_json(item_name, mod)
+        #for item_name, mod in dict_objs.items():
+        #    self.__add_item_from_json(item_name, mod)
         
     def reset(self) -> None:
         self.clear()  # self is based off of dict()
 
-    def __add_item_from_json(self, item_name, mod) -> None:
+    def add_item_from_json(self, item_name, mod) -> None:
         py_item = self.world.item_holder[item_name]
-        self.add_item(py_item, mod)
+        self.update({py_item: mod})
 
     def add_item(self, py_item, mod) -> None:
         if len(self) >= 6:  # block more than 6 items being in the bag.
@@ -139,7 +114,7 @@ class Item_Bag(dict):
     def item_modded_value(self, py_item):
         mod = self.item_modifier_keys.get(self[py_item], 0)
         # bargaining power only helps with buying cost, not selling profit
-        if self.mode == self.BUYING_KEY : 
+        if self.mode == st.ISLAND_BUYING_KEY : 
             mod -= self.world.ship.bargaining_power_pct # bargaining power reduces inflation
         value_adjustment = (((py_item.value) * (mod))//100 )
         return int(py_item.value + value_adjustment)  * self.bag_modifier
@@ -153,22 +128,16 @@ class Item_Bag(dict):
 
 
 class Island():
-    PRIMARY_KEY = "nodes"
-    SELLING_KEY = Item_Bag.SELLING_KEY
-    BUYING_KEY = Item_Bag.BUYING_KEY
-    LOCATION_KEY = "loc_x_y"
-    SHAPE_KEY = "shape"
-    DOCK_KEY = "dock_x_y"
 
     def __init__(self, world, island_name, dict_obj) -> None:
         self.world = world
         self.name = island_name.title()
         self.links = dict()  # linked island: weight
-        self.sell = Item_Bag(type_key = self.SELLING_KEY, dict_objs = dict_obj[self.SELLING_KEY], world = world)
-        self.buy = Item_Bag(type_key = self.BUYING_KEY, dict_objs = dict_obj[self.BUYING_KEY], world = world)
-        self.loc_x_y = tuple(dict_obj[self.LOCATION_KEY])
-        self.shapes = self.shifted_shape(dict_obj[self.SHAPE_KEY])
-        self.dock = self.__x_y_shift_center(dict_obj[self.DOCK_KEY])
+        self.sell = Item_Bag(type_key = st.ISLAND_SELLING_KEY, world = world)
+        self.buy = Item_Bag(type_key = st.ISLAND_BUYING_KEY, world = world)
+        self.loc_x_y = tuple(dict_obj[st.ISLAND_LOCATION_KEY])
+        self.shapes = self.shifted_shape(dict_obj[st.ISLAND_SHAPE_KEY])
+        self.dock = self.__x_y_shift_center(dict_obj[st.ISLAND_DOCK_KEY])
         
     @property
     def __link_count(self):
@@ -194,7 +163,7 @@ class Island():
         return (point[0]+x, point[1]+y)
 
     def shifted_shape(self, shapes_array, mode = 'center') -> list:
-        if debug: print("shifted_shape", self.name, shapes_array )
+        if debug: print("Island.shifted_shape", self.name, shapes_array )
         if shapes_array == None:
             return None
         for index_0, each_shape in enumerate(shapes_array):
@@ -238,28 +207,36 @@ class Island():
         income = purchase_cost + revenue
         return [purchase_cost, revenue, income ]
     
+    def update_from_json(self, dict_obj):
+        if debug: print(f"Island.update_from_json: {dict_obj = }")
+        self.reset_bags() # clear any items as this is an overwrite
+        for item_name, mod in dict_obj[st.ISLAND_SELLING_KEY].items():
+            self.sell.add_item_from_json(item_name, mod)
+        for item_name, mod in dict_obj[st.ISLAND_BUYING_KEY].items():
+            self.buy.add_item_from_json(item_name, mod)
+
     def add_item(self, buyvsell, py_item, mod):
-        if debug: print(f"island.add_item {buyvsell = } {py_item = } {mod =}")
-        if buyvsell == 'b':
+        if debug: print(f"Island.island.add_item {buyvsell = } {py_item = } {mod =}")
+        if buyvsell == st.ISLAND_BUYING_KEY[0]:
             self.add_buy_item(py_item, mod)
-        elif buyvsell == 's':
+        elif buyvsell == st.ISLAND_SELLING_KEY[0]:
             self.add_sell_item(py_item, mod)
         else:
             print(f"error, {buyvsell = } invalid")
 
     def add_sell_item(self, py_item, mod): 
-        if debug: print(f"add_sell_item {py_item =} {mod=}")
+        if debug: print(f"Island.add_sell_item {py_item =} {mod=}")
         self.buy.remove_item(py_item)  # protects items from being on both lists 
         self.sell.add_item(py_item, mod)
 
     def add_buy_item(self, py_item, mod):
-        if debug: print(f"add_buy_item {py_item =} {mod=}")
+        if debug: print(f"Island.add_buy_item {py_item =} {mod=}")
         self.sell.remove_item(py_item) # protects items from being on both lists 
         self.buy.add_item(py_item, mod)
 
     def left_overs_into_other_bag(self, empty_) -> None:
-        if debug: print(f"left_overs_into_other_bag({self.name} {empty_})")
-        if empty_[0].lower() == 'b': 
+        if debug: print(f"Island.left_overs_into_other_bag({self.name} {empty_})")
+        if empty_[0].lower() == st.ISLAND_BUYING_KEY[0]: 
             full_bag =  self.sell  # sell bag has items
             empty_bag = self.buy  # buy bag needs items
         else:
@@ -271,32 +248,24 @@ class Island():
                 empty_bag.add_item(item, mod)   
 
     def add_link(self, linking_island, weight) -> None: 
-        if debug: print("add_link")
+        if debug: print("Island.add_link")
         self.links.update({linking_island: weight})
 
     def __repr__(self) -> str:
         return f"{self.name} x {self.__link_count}"
 
 
+
 class Ship():
-    PRIMARY_KEY = "ship"
-    LOCATION_KEY = "current_location"
-    CAPACITY_KEY = "capacity"
-    BARGAINING_KEY = "bargaining_power"
-    SAIL_KEY = "ship_sail"
-    HULL_KEY = 'ship_hull'
 
     def __init__(self, world) -> None:
-        dict_obj = Json_file_Manager.get_primary_object(self.PRIMARY_KEY)
         self.world = world
-        self.current_location = world.island_holder[dict_obj[self.LOCATION_KEY]]  # Island object
-        self.capacity = dict_obj[self.CAPACITY_KEY]
-        self.bargaining_power_pct = dict_obj[self.BARGAINING_KEY] # bargaining power only helps with buying cost, not selling profit
-        self.travel_points = 10
-        self.__sail_shape = dict_obj[self.SAIL_KEY]
-        self.__hull_shape = dict_obj[self.HULL_KEY]  
-            # when ready to use : self.current_location.shifted_shape(dict_obj[self.HULL_KEY] )
-       
+        self.current_location = world.island_holder["Samalkan"]  # Island object
+        self.capacity = 90
+        self.bargaining_power_pct = 0 # bargaining power only helps with buying cost, not selling profit
+        self.__sail_shape = st.ISLAND_DATA[st.SHIP_PRIMARY_KEY][st.SHIP_SAIL_KEY]
+        self.__hull_shape = st.ISLAND_DATA[st.SHIP_PRIMARY_KEY][st.SHIP_HULL_KEY]  
+        
     @property
     def sail_shape(self):
         safe_shape_array = deepcopy(self.__sail_shape)
@@ -307,6 +276,11 @@ class Ship():
         safe_shape_array = deepcopy(self.__hull_shape)
         return self.current_location.shifted_shape(safe_shape_array, mode= 'dock')
 
+    def update_from_json(self, dict_obj):
+        if debug: print("Ship.update_from_json")
+        self.current_location = self.world.island_holder[dict_obj[st.SHIP_LOCACTION_KEY]]
+        self.capacity = dict_obj[st.SHIP_CAPACITY_KEY]
+        self.bargaining_power_pct = dict_obj[st.SHIP_BARGAINING_KEY]
 
     def set_location(self, new_island) -> None:
         try:
@@ -337,8 +311,8 @@ class Ship():
 class World():
     NO_MATCH = 'no match'
     FROM = 'From'
-    TO = 'To'
-    ITEM = 'Item' 
+    TO = '    To    '
+    ITEM = '  Item  ' 
     COST = 'Item Cost'  # expence to get item
     INCOME = 'Income'  # Income, on the other hand, is the total amount of money earned after all expenses are deducted
     REVENUE = 'Revenue'  # Revenue is the total amount of money an entity earns from a variety of sources
@@ -361,21 +335,22 @@ class World():
         self.trade_dataframe = None
         self.populate_trade_data()
         self.__long_path_holder = [[0, 0]]
+        self.file_manager = File_Manager(self)
 
     def __populate_item_holder(self) -> None:
-        if debug: print("populate_item_holder")
-        for item_dict in Json_file_Manager.get_primary_object("items"):
+        if debug: print("World.__populate_item_holder")
+        for item_dict in st.ISLAND_DATA[st.ITEM_PRIMARY_KEY]:
             self.item_holder.update({item_dict['name'].title(): Item(item_dict)})
 
     def __populate_island_holder(self) -> None:
-        if debug: print("populate_island_holder")
-        for island_name, island_dict in Json_file_Manager.get_primary_object(Island.PRIMARY_KEY).items():
+        if debug: print("World.populate_island_holder")
+        for island_name, island_dict in st.ISLAND_DATA[st.ISLAND_PRIMARY_KEY].items():  # worried about this DICT referance 
             self.island_holder.update({island_name.title(): Island(self, island_name, island_dict)})
             self.last_island_name = island_name.title() # order maters, last island is center
         
     def __populate_island_links(self) -> None:
-        for u_edge in Json_file_Manager.get_secondary_object("edges", "undirected edges"):
-            island_0, island_1 = u_edge["nodes"]
+        for u_edge in  st.ISLAND_DATA[st.ISLAND_EDGES_KEY][st.ISLAND_UNDIRECTED_KEY]: # Json_Manager.get_secondary_object("edges", "undirected edges"):
+            island_0, island_1 = u_edge[st.ISLAND_PRIMARY_KEY]
             island_0 = self.island_holder[island_0]
             island_1 = self.island_holder[island_1]
             weight = u_edge["weight"]
@@ -397,10 +372,18 @@ class World():
         for each_island in self.island_holder:
             each_island = self.island_holder[each_island]
             each_island.reset_bags()
-      
-    def save_all(self):  #
-        if debug: print("World.save_all")
-        Json_file_Manager.save_game(self)
+
+    def load(self)-> bool:
+        if debug: print(f"World.load")
+        return self.file_manager.load()
+
+    def save_as(self) -> bool:  #
+        if debug: print("World.save_as")
+        return self.file_manager.save_as()
+
+    def save(self) -> bool:  #
+        if debug: print("World.save")
+        return self.file_manager.save()
 
     def populate_trade_data(self):
         if debug: print(f"World.populate_trade_data")
@@ -467,7 +450,6 @@ class World():
         if debug: print(f"World.long_path_headers_display @property")
         return [self.FROM, self.TO, self.ITEM, self.VALUES, self.MOVEMENT]
 
-
     def __calculations_for_best_long_path(self, from_island_py: Island, remaining_movment_points: int, running_value = 0, running_path = [], indent = ""):
         # no debug printout as this is recursive and printout will kill it.
         if remaining_movment_points <= 0:  # send results of path to logger 
@@ -522,4 +504,5 @@ class World():
         if debug: print(f"World.best_long_path_dummy @property")
         temp_table = pandas.DataFrame([self.long_path_headers_panda], columns=self.long_path_headers_display)
         return temp_table.rename(columns={self.mode: self.VALUES})
+
 

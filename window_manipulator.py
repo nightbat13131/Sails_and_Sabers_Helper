@@ -200,18 +200,23 @@ class HandOfGod():
                 self.clear_only_selected_island()
             case helper.CLEAR_ALL_ISLANDS:
                 self.clear_all_islands_bags()
-            case helper.REMOVE_ITEM_BUTTON_KEY:
-                self.remove_item()
             case helper.ISLAND_SELECTED_BUTTON_KEY:
                 self.update_selected_island()
+            case helper.LOAD:
+                self.load_triggered()
+            case helper.REMOVE_ITEM_BUTTON_KEY:
+                self.remove_item()
+            case helper.SAVE:
+                self.save_triggered()
+            case helper.SAVE_AS:
+                self.save_as_triggered()
             case helper.TRAVEL_ISLAND_BUTTON_KEY:
                 self.travel_to()
             case helper.UPDATE_BAG_BUTTON_KEY:
                 self.send_bags_to_py()
             case helper.UPDATE_SHIP_KEY:
                 self.ship_update_values()
-            case helper.SAVE_ENTRIES:
-                self.save_triggered()
+
 
     def clear_all_islands_bags(self) -> None:
         if debug: print(f"clear_all_islands_bags")
@@ -405,6 +410,13 @@ class HandOfGod():
         except: 
             self.window[helper.BEST_1_OUT_TABLE_KEY].update([[helper.BLANK,helper.BLANK,helper.BLANK,helper.BLANK]])
             pass
+    
+    def update_ship(self):
+        self.window[helper.SHIP_CAPASITY_INPUT].update(self.world.ship.capacity)
+        self.window[helper.SHIP_BARGAINING_INPUT].update(self.world.ship.bargaining_power_pct)
+        self.window[helper.TRAVEL_ISLAND_NAME_KEY].update(self.world.ship.current_location.name)
+
+        pass
 
     def update_selected_island(self) -> None:
         if debug: print("update_selected_island")
@@ -431,21 +443,50 @@ class HandOfGod():
         self.refresh_dispaly()
         self.send_confirmation(f"Mode updated to {text}")
 
+    def load_triggered(self) -> None:
+        if debug: print('load_triggered')
+        chosen = sg.popup_yes_no('Would you like to load?', title= 'Load?')
+        if debug: print (f"load_triggered {chosen = }")
+        was_success = False
+        if chosen == helper.YES:
+            was_success = self.world.load()
+        if was_success:
+            self.send_confirmation("Load Comand Sent")
+        else:
+            self.send_confirmation("Not Loaded")
+        self.refresh_dispaly()
+            
+
+    def save_as_triggered(self) -> None:
+        if debug: print('save_as_triggered')
+        chosen = sg.popup_yes_no('Would you like to save?', title= 'Save?')
+        if debug: print (f"save_as)triggered {chosen = }")
+        was_success = False
+        if chosen == helper.YES:
+            was_success = self.world.save_as()
+        if was_success:
+            self.send_confirmation("Save Comand Sent")
+        else:
+            self.send_confirmation("Not saved")
+            
     def save_triggered(self) -> None:
         if debug: print('save_triggered')
         chosen = sg.popup_yes_no('Would you like to save?', title= 'Save?')
         if debug: print (f"save_triggered {chosen = }")
+        was_success = False
         if chosen == helper.YES:
-            self.world.save_all()
+            was_success = self.world.save()
+        if was_success:
             self.send_confirmation("Save Comand Sent")
         else:
             self.send_confirmation("Not saved")
-            pass
+            
 
     def refresh_dispaly(self)-> None:
         if debug: print(f"refresh_dispaly")
         self.world.populate_trade_data()
         self.update_center()
+        self.update_ship()
         self.populate_ship_connections() # is there any time the ship isn't at an island? 
         self.update_selected_island()
         pass
