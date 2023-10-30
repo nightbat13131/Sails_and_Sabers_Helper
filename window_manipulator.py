@@ -413,10 +413,10 @@ class HandOfGod():
     
     def update_ship(self):
         self.window[helper.SHIP_CAPASITY_INPUT].update(self.world.ship.capacity)
-        self.window[helper.SHIP_BARGAINING_INPUT].update(self.world.ship.bargaining_power_pct)
-        self.window[helper.TRAVEL_ISLAND_NAME_KEY].update(self.world.ship.current_location.name)
+        self.window[helper.SHIP_BARGAINING_INPUT].update(f"{self.world.ship.bargaining_power_pct}%")
+        self.window[helper.LOCATION_KEY].update(helper.LOCATION.format(self.world.ship.current_location.name))
+        self.window[helper.TRAVEL_ISLAND_NAME_KEY].update(helper.TRAVEL_ISLAND_NAME_PRMOPT)
 
-        pass
 
     def update_selected_island(self) -> None:
         if debug: print("update_selected_island")

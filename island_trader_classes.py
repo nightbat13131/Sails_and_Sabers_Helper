@@ -50,6 +50,7 @@ class File_Manager():
         try:
             loaded_file = askopenfile(title= "Choose .json to load")
             file_content = json.load(loaded_file)
+            self.file_path = loaded_file.name
             loaded_file.close()
             self.world.ship.update_from_json(file_content[st.SHIP_PRIMARY_KEY])
             for island_name, dict_obj in file_content[st.ISLAND_PRIMARY_KEY].items():
@@ -105,6 +106,7 @@ class Item_Bag(dict):
         self.update({py_item: mod})
 
     def add_item(self, py_item, mod) -> None:
+        mod = mod if mod in self.item_modifier_keys.keys() else 0
         if len(self) >= 6:  # block more than 6 items being in the bag.
             if py_item in self:
                 self[py_item] = mod  # update if pressent

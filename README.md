@@ -57,3 +57,8 @@ You can load information you saved via the Save or Save As option. Best long pat
 
 #### Conformation
 There is conformation text at the bottom on the screen that will confirm most actions taken with the tool. If an error prevents a save or load, the failed message will show here.  
+
+#### .EXE
+Process to convert python into .exe file: https://pypi.org/project/pysimplegui-exemaker/
+python -m pysimplegui-exemaker.pysimplegui-exemaker
+
