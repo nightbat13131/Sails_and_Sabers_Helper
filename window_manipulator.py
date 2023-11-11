@@ -171,19 +171,9 @@ class HandOfGod():
         self.world = world
         self.best_1_out_mapper = Cartographer(world, best_1_canvas, helper.BEST_1_OUT_GRAPH_KEY)
         self.best_long_path_mapper = Cartographer(world, best_path_canvas, helper.BEST_LONG_PATH_GRAPH_KEY)
+        self.select_island_actual_py = None
         self.values = None
 
-    def get_selected_island(self, name_only  = True) -> str:
-        if debug: print(f"get_selected_island {name_only=}" )
-        name = self.values[helper.SELECT_ISLAND_NAME_KEY] 
-        if debug: print(f"get_selected_island_name {name=} {name_only=}")
-        if name == helper.SELECT_ISLAND_NAME_PRMOPT:
-            return None
-        else:
-            if name_only:
-                return name
-            else: 
-                return self.world.island_holder[name]
 
     def process_event_input(self, event, values) -> None: # exit is handled in the while
         self.set_values(values)
@@ -201,7 +191,7 @@ class HandOfGod():
             case helper.CLEAR_ALL_ISLANDS:
                 self.clear_all_islands_bags()
             case helper.ISLAND_SELECTED_BUTTON_KEY:
-                self.update_selected_island()
+                self.update_selected_island_holder()
             case helper.LOAD:
                 self.load_triggered()
             case helper.REMOVE_ITEM_BUTTON_KEY:
@@ -217,7 +207,6 @@ class HandOfGod():
             case helper.UPDATE_SHIP_KEY:
                 self.ship_update_values()
 
-
     def clear_all_islands_bags(self) -> None:
         if debug: print(f"clear_all_islands_bags")
         self.world.reset_all_island_bags()
@@ -226,7 +215,7 @@ class HandOfGod():
 
     def clear_only_selected_island(self) -> None:
         if debug: print(f"clear_only_selected_island:")
-        island_py = self.get_selected_island(name_only=False)
+        island_py = self.select_island_actual_py
         if island_py == None:
             return
         island_py.reset_bags()
@@ -245,11 +234,11 @@ class HandOfGod():
 
     def left_overs_into_other(self, empty_bag) -> None:
         if debug: print(f"left_overs_into_other {empty_bag=}")
-        island_py = self.get_selected_island(name_only=False)
+        island_py = self.select_island_actual_py
         if island_py == None:
             return # no island selected to move stuff
         self.send_bags_to_py()  # fill island bags with current selections
-        island_py = self.get_selected_island(name_only=False)
+        island_py = self.select_island_actual_py
         island_py.left_overs_into_other_bag(empty_bag)
         self.refresh_dispaly()
         self.send_confirmation(f"{island_py.name}'s full bag used to fill {empty_bag} bag.")
@@ -300,7 +289,7 @@ class HandOfGod():
         if debug: print("populate_long_path_tab F")
 
     def remove_item(self):
-        island_py = self.get_selected_island(name_only=False)
+        island_py = self.select_island_actual_py
         item = self.values[helper.REMOVE_ITEM_KEY] 
         island_py.remove_item(item)
         self.window[helper.REMOVE_ITEM_KEY].update(value=helper.BLANK)
@@ -323,7 +312,7 @@ class HandOfGod():
   
     def send_bags_to_py(self) -> None:
         if debug: print(f"send_bags_to_py")
-        island_py = self.get_selected_island(name_only=False)
+        island_py = self.select_island_actual_py
         self.send_each_bag_to_py(island_py, helper.SELL_ITEM)
         self.send_each_bag_to_py(island_py, helper.BUY_ITEM)
         self.refresh_dispaly()
@@ -388,7 +377,8 @@ class HandOfGod():
 
     def travel_to(self) -> None:
         next_island = self.values[helper.TRAVEL_ISLAND_NAME_KEY]  # self.window[helper.TRAVEL_ISLAND_NAME_KEY].get()
-        if next_island == helper.TRAVEL_ISLAND_NAME_PRMOPT:
+        self.window[helper.TRAVEL_ISLAND_NAME_KEY].update(helper.TRAVEL_ISLAND_NAME_PRMOPT)
+        if next_island not in self.world.island_holder:
             return
         island_py = self.world.island_holder[next_island]
         if debug: print(f"travel_to: {next_island}")
@@ -415,25 +405,38 @@ class HandOfGod():
         self.window[helper.SHIP_CAPASITY_INPUT].update(self.world.ship.capacity)
         self.window[helper.SHIP_BARGAINING_INPUT].update(f"{self.world.ship.bargaining_power_pct}%")
         self.window[helper.LOCATION_KEY].update(helper.LOCATION.format(self.world.ship.current_location.name))
-        self.window[helper.TRAVEL_ISLAND_NAME_KEY].update(helper.TRAVEL_ISLAND_NAME_PRMOPT)
-
+        # self.window[helper.TRAVEL_ISLAND_NAME_KEY].update(helper.TRAVEL_ISLAND_NAME_PRMOPT)
 
     def update_selected_island(self) -> None:
         if debug: print("update_selected_island")
-        selected_island_py = self.get_selected_island(name_only=False)
-        selected_island_name = self.get_selected_island(name_only=True)
-        if selected_island_py == None: 
+        # selected_island_name = None if self.select_island_actual_py.name is None else self.select_island_actual_py.name
+            
+        if self.select_island_actual_py == None: 
             # hide bag edit area
             self.window[helper.SELECT_ISLAND_DISPLAY_FRAME_KEY].update(visible=False)
             return
         else:
             # show bag edit area
             self.window[helper.SELECT_ISLAND_DISPLAY_FRAME_KEY].update(visible=True)
-            self.window[helper.SELECT_ISLAND_DISPLAY_FRAME_KEY].update(selected_island_name)
-            self.window[helper.REMOVE+helper.FRAME_KEY].update(helper.REMOVE_HEADER.format(selected_island_name))
+            self.window[helper.SELECT_ISLAND_DISPLAY_FRAME_KEY].update(self.select_island_actual_py.name)
+            self.window[helper.REMOVE+helper.FRAME_KEY].update(helper.REMOVE_HEADER.format(self.select_island_actual_py.name))
+            self.populate_bag_column(self.select_island_actual_py)
+        self.window[helper.SELECT_ISLAND_NAME_KEY].update(helper.SELECT_ISLAND_NAME_PRMOPT)
+        self.send_confirmation(f'Island of {self.select_island_actual_py.name} selected.')
 
-            self.populate_bag_column(selected_island_py)
-        self.send_confirmation(f'Island of {selected_island_name} selected.')
+    def update_selected_island_holder(self) -> None:
+        if debug: print("update_selected_island_holder")
+        entry_name = self.values[helper.SELECT_ISLAND_NAME_KEY] 
+        if debug: print(f" {entry_name=} ")
+        if entry_name == helper.SELECT_ISLAND_DISPLAY_FRAME_KEY:
+            self.select_island_actual_py = None  # clear currently selected island
+        elif entry_name not in self.world.island_holder:  # protect against manual invalid text
+            self.window[helper.SELECT_ISLAND_NAME_KEY].update(helper.SELECT_ISLAND_NAME_PRMOPT)
+            return # leave no change to currnetly selected island
+        else:
+            self.select_island_actual_py = self.world.island_holder[entry_name]
+        self.update_selected_island()
+        pass
 
     def update_world_mode(self, text):
         if debug: print(f"update_world_mode {text}")
@@ -445,7 +448,7 @@ class HandOfGod():
 
     def load_triggered(self) -> None:
         if debug: print('load_triggered')
-        chosen = sg.popup_yes_no('Would you like to load?', title= 'Load?')
+        chosen = sg.popup_yes_no(helper.PRE_LOAD_MESSAGE, title= 'Load?')
         if debug: print (f"load_triggered {chosen = }")
         was_success = False
         if chosen == helper.YES:
@@ -456,7 +459,6 @@ class HandOfGod():
             self.send_confirmation("Not Loaded")
         self.refresh_dispaly()
             
-
     def save_as_triggered(self) -> None:
         if debug: print('save_as_triggered')
         chosen = sg.popup_yes_no('Would you like to save?', title= 'Save?')
@@ -481,7 +483,6 @@ class HandOfGod():
         else:
             self.send_confirmation("Not saved")
             
-
     def refresh_dispaly(self)-> None:
         if debug: print(f"refresh_dispaly")
         self.world.populate_trade_data()

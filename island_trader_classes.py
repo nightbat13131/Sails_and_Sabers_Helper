@@ -4,7 +4,7 @@ import common_strings as st
 from copy import deepcopy
 from tkinter.filedialog import askopenfile # open - import
 from tkinter.filedialog import asksaveasfilename # save as - export
-debug = True
+debug = False
 
 class File_Manager(): 
     def __init__(self, world) -> None:
@@ -121,9 +121,12 @@ class Item_Bag(dict):
         value_adjustment = (((py_item.value) * (mod))//100 )
         return int(py_item.value + value_adjustment)  * self.bag_modifier
     
-    def remove_item(self, py_item):
-        if py_item in self:
-            self.pop(py_item)
+    def remove_item(self, item):
+        if type(item) == str:  # item will often be string
+            if item in self.world.item_holder: # protect against rouge strings
+                item = self.world.item_holder[item]
+        if item in self:
+            self.pop(item)
 
     def __repr__(self):
         return f"Item_Bag: {self.mode} {[each for each in self.items()]}"
@@ -182,8 +185,6 @@ class Island():
         self.sell.reset()
     
     def remove_item(self, item):
-        if type(item) == str:  # item will often be string
-            item = self.world.item_holder[item]
         self.sell.remove_item(item)
         self.buy.remove_item(item)
 
@@ -257,7 +258,6 @@ class Island():
         return f"{self.name} x {self.__link_count}"
 
 
-
 class Ship():
 
     def __init__(self, world) -> None:
@@ -312,9 +312,9 @@ class Ship():
 
 class World():
     NO_MATCH = 'no match'
-    FROM = 'From'
-    TO = '    To    '
-    ITEM = '  Item  ' 
+    FROM = '__From__'
+    TO = '__To__'
+    ITEM = '_Item_' 
     COST = 'Item Cost'  # expence to get item
     INCOME = 'Income'  # Income, on the other hand, is the total amount of money earned after all expenses are deducted
     REVENUE = 'Revenue'  # Revenue is the total amount of money an entity earns from a variety of sources
@@ -455,51 +455,50 @@ class World():
     def __calculations_for_best_long_path(self, from_island_py: Island, remaining_movment_points: int, running_value = 0, running_path = [], indent = ""):
         # no debug printout as this is recursive and printout will kill it.
         if remaining_movment_points <= 0:  # send results of path to logger 
-            # print(indent, f"I hit the base: {running_value=}, {running_path=}")
+            print(indent, f"I hit the base: {running_value=}, {running_path=}")
             self.__add_to_multi_holer([running_value] + running_path)
-            # add path to multi_holder
             return
         for destination_island_py, movement_cost in from_island_py.links.items():
-            # print(indent, "a", from_island_py, destination_island_py, movement_cost)
-            if movement_cost > remaining_movment_points:
-                # can not afford to move here
-                # print(indent, f"Can't afford this trip: {from_island_py, '>', destination_island_py, movement_cost, remaining_movment_points}")
+            print(indent, "a", from_island_py, destination_island_py, movement_cost)
+            if movement_cost > remaining_movment_points: # can not afford to move here
+                print(indent, f"a.Can't afford this trip: {from_island_py, '>', destination_island_py, movement_cost, remaining_movment_points}")
                 self.__calculations_for_best_long_path(from_island_py, 0, running_value, running_path, indent + " " ) 
             else:
+                print(indent, f"a.a {self.FROM} {from_island_py.name} {self.TO} {destination_island_py.name}")
                 filtered_df = self.trade_dataframe[self.long_path_headers_panda].query(
                     f"""{self.FROM} == "{from_island_py.name}" and {self.TO} == "{destination_island_py.name}" """
                     ).head(1)
-                # print(indent, f"{filtered_df.shape=}")
-                # print(indent, f"{filtered_df=}")
+                print(indent, f"a.b")
+                print(indent, f"{filtered_df=}")
+                print(indent, f"{filtered_df.shape=}")
+                print(indent, f"{filtered_df=}")
                 if filtered_df.shape[0] < 1: # no match to filter found, this path is a dead end
-                    # print(indent, f"No Match: {from_island_py, destination_island_py, movement_cost, remaining_movment_points}")
+                    print(indent, f"No Match: {from_island_py, destination_island_py, movement_cost, remaining_movment_points}")
                     self.__calculations_for_best_long_path(from_island_py, 0, running_value, running_path, indent + " " )
                 else: 
-                    # print(indent, f"Making this trip: {from_island_py, destination_island_py, movement_cost, remaining_movment_points}")                
-                    #   new_path_entry = [filtered_df.iloc[0][self.long_path_headers_panda].array.tolist()]
+                    print(indent, f"Making this trip: {from_island_py, destination_island_py, movement_cost, remaining_movment_points}")                
+                    new_path_entry = [filtered_df.iloc[0][self.long_path_headers_panda].array.tolist()]
                     new_path_entry = [filtered_df.iloc[0].to_list()]
                     added_value = filtered_df[self.mode].to_list()[0]
-                    # print(indent, f" {added_value=} {new_path_entry=}")
+                    print(indent, f" {added_value=} {new_path_entry=}")
                     self.__calculations_for_best_long_path(destination_island_py, remaining_movment_points - movement_cost, running_value + added_value, running_path + new_path_entry , indent + " " )
 
     @property
     def best_long_path(self, steps = 8):
-        if debug: print(f"World.best_long_path")
-        # start of best loop can be no more than 2 steps away
-        # gives 6 steps to travel loop - feed good for verifying high value.
-        self.__long_path_holder = [[0, 0]]  # reset to hold new values
-        # try:
-        if debug: print(f"World.best_long_path - pre call __calculations_for_best_long_path")
-        self.__calculations_for_best_long_path(self.ship.current_location, steps)
+            if debug: print(f"World.best_long_path")
+            self.__long_path_holder = [[0, 0]]  # reset to prepare for new values
+            if debug: print(f"World.best_long_path - pre call __calculations_for_best_long_path - entering try:")
+        #try:
+            self.__calculations_for_best_long_path(self.ship.current_location, steps)
+            if debug: print(f"World.best_long_path - post call __calculations_for_best_long_path - success")
         #except:
-        #    self.__add_to_multi_holer([1000000, ["A-best_long_path failed in some way", "B", "C", 4, 5]])
-        # print(f"{self.__long_path_holder=}")
-        if debug: print(f"World.best_long_path - post call __calculations_for_best_long_path")
-        if debug: print(f"{self.__long_path_holder=}")
-        if self.__long_path_holder ==  [[0, 0]]: # no change after having been reset
-            return self.best_long_path_dummy
-        temp_table = pandas.DataFrame(self.__long_path_holder[0][1:], columns=self.long_path_headers_panda)
-        return temp_table.rename(columns={self.mode: self.VALUES})
+        #    if debug: print("except: __calculations_for_best_long_path failed in some way")
+        #finally:
+            if debug: print(f"{self.__long_path_holder=}")
+            if self.__long_path_holder ==  [[0, 0]]: # no change after having been reset
+                return self.best_long_path_dummy
+            temp_table = pandas.DataFrame(self.__long_path_holder[0][1:], columns=self.long_path_headers_panda)
+            return temp_table.rename(columns={self.mode: self.VALUES})
     
     @property
     def best_long_path_dummy(self, steps = 8):
@@ -507,4 +506,4 @@ class World():
         temp_table = pandas.DataFrame([self.long_path_headers_panda], columns=self.long_path_headers_display)
         return temp_table.rename(columns={self.mode: self.VALUES})
 
-
+       
