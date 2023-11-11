@@ -313,8 +313,8 @@ class Ship():
 class World():
     NO_MATCH = 'no match'
     FROM = '__From__'
-    TO = '__To__'
-    ITEM = '_Item_' 
+    TO = '___To___'
+    ITEM = '__Item__' 
     COST = 'Item Cost'  # expence to get item
     INCOME = 'Income'  # Income, on the other hand, is the total amount of money earned after all expenses are deducted
     REVENUE = 'Revenue'  # Revenue is the total amount of money an entity earns from a variety of sources
@@ -377,7 +377,10 @@ class World():
 
     def load(self)-> bool:
         if debug: print(f"World.load")
-        return self.file_manager.load()
+        was_successful = self.file_manager.load()
+        if was_successful:
+            self.populate_trade_data()
+        return was_successful
 
     def save_as(self) -> bool:  #
         if debug: print("World.save_as")
@@ -427,7 +430,7 @@ class World():
             return self.trade_dataframe
 
     def __add_to_multi_holer(self, new_list, max_items = 1):
-        if debug: print(f"World.__add_to_multi_holer")
+        if debug: print(f"World.__add_to_multi_holer {new_list=}")
         new_value = new_list[0]
         current_minimum = self.__long_path_holder[-1][0]    
         if (len(self.__long_path_holder) == max_items) and (new_value <= current_minimum):
@@ -438,7 +441,7 @@ class World():
                 if current_value < new_value:
                     self.__long_path_holder.insert(index, new_list)
                     break # done with current for loop
-            
+        if debug: print(f"{self.__long_path_holder}")
         if len(self.__long_path_holder) > max_items:
             a = self.__long_path_holder.pop(-1)
 
@@ -459,28 +462,27 @@ class World():
             self.__add_to_multi_holer([running_value] + running_path)
             return
         for destination_island_py, movement_cost in from_island_py.links.items():
-            print(indent, "a", from_island_py, destination_island_py, movement_cost)
+            #print(indent, "a", from_island_py, destination_island_py, movement_cost)
             if movement_cost > remaining_movment_points: # can not afford to move here
-                print(indent, f"a.Can't afford this trip: {from_island_py, '>', destination_island_py, movement_cost, remaining_movment_points}")
+                #print(indent, f"a.Can't afford this trip: {from_island_py, '>', destination_island_py, movement_cost, remaining_movment_points}")
                 self.__calculations_for_best_long_path(from_island_py, 0, running_value, running_path, indent + " " ) 
             else:
-                print(indent, f"a.a {self.FROM} {from_island_py.name} {self.TO} {destination_island_py.name}")
+                #print(indent, f"a.a {self.FROM} {from_island_py.name} {self.TO} {destination_island_py.name}")
                 filtered_df = self.trade_dataframe[self.long_path_headers_panda].query(
                     f"""{self.FROM} == "{from_island_py.name}" and {self.TO} == "{destination_island_py.name}" """
                     ).head(1)
-                print(indent, f"a.b")
-                print(indent, f"{filtered_df=}")
-                print(indent, f"{filtered_df.shape=}")
-                print(indent, f"{filtered_df=}")
+                #print(indent, f"a.b")
+                #print(indent, f"{filtered_df.shape=}")
+                #print(indent, f"{filtered_df=}")
                 if filtered_df.shape[0] < 1: # no match to filter found, this path is a dead end
-                    print(indent, f"No Match: {from_island_py, destination_island_py, movement_cost, remaining_movment_points}")
+                    #print(indent, f"No Match: {from_island_py, destination_island_py, movement_cost, remaining_movment_points}")
                     self.__calculations_for_best_long_path(from_island_py, 0, running_value, running_path, indent + " " )
                 else: 
-                    print(indent, f"Making this trip: {from_island_py, destination_island_py, movement_cost, remaining_movment_points}")                
+                    #print(indent, f"Making this trip: {from_island_py, destination_island_py, movement_cost, remaining_movment_points}")                
                     new_path_entry = [filtered_df.iloc[0][self.long_path_headers_panda].array.tolist()]
                     new_path_entry = [filtered_df.iloc[0].to_list()]
                     added_value = filtered_df[self.mode].to_list()[0]
-                    print(indent, f" {added_value=} {new_path_entry=}")
+                    #print(indent, f" {added_value=} {new_path_entry=}")
                     self.__calculations_for_best_long_path(destination_island_py, remaining_movment_points - movement_cost, running_value + added_value, running_path + new_path_entry , indent + " " )
 
     @property
